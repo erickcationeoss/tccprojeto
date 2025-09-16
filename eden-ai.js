@@ -1,12 +1,13 @@
-// eden-ai.js - Integração com API da Eden AI
+// eden-ai.js - Integração com API da Eden AI (Versão Corrigida)
 
 import { supabase } from './supabase-client.js';
+import axios from 'axios'; // ✅ IMPORT AXIOS ADICIONADO
 
 // Configuração da API Eden AI
 const EDEN_AI_API_KEY = import.meta.env.VITE_EDEN_AI_API_KEY;
 const EDEN_AI_BASE_URL = 'https://api.edenai.run/v2';
 
-// Lista de provedores disponíveis para diferentes funcionalidades
+// Lista de provedores disponíveis
 const PROVIDERS = {
   TEXT: ['openai', 'google', 'microsoft'],
   IMAGE: ['openai', 'stabilityai', 'deepai'],
@@ -23,7 +24,7 @@ export async function askEdenAI(question, provider = 'openai') {
 
     // Verificar se o provider é válido
     if (!PROVIDERS.TEXT.includes(provider)) {
-      provider = 'openai'; // Fallback para OpenAI
+      provider = 'openai';
     }
 
     const options = {
@@ -38,24 +39,25 @@ export async function askEdenAI(question, provider = 'openai') {
         text: question,
         temperature: 0.7,
         max_tokens: 500,
-        fallback_providers: 'google' // Fallback caso o provider principal falhe
+        fallback_providers: 'google'
       }
     };
 
     const response = await axios.request(options);
     
-    // Salvar a interação no Supabase
-    await saveInteraction(question, response.data, provider);
+    // Salvar a interação no Supabase (FUNÇÃO CORRIGIDA)
+    const saved = await saveEdenInteraction(question, response.data, provider);
     
     return {
       success: true,
       data: response.data,
-      provider: provider
+      provider: provider,
+      savedToDB: saved
     };
   } catch (error) {
     console.error('Erro ao chamar Eden AI:', error);
     
-    // Tentar com fallback provider em caso de erro
+    // Tentar com fallback provider
     if (provider !== 'google') {
       console.log('Tentando com fallback provider...');
       return askEdenAI(question, 'google');
@@ -64,12 +66,12 @@ export async function askEdenAI(question, provider = 'openai') {
     return {
       success: false,
       error: error.message,
-      suggestion: 'Tente reformular sua pergunta ou tente novamente em alguns instantes.'
+      suggestion: 'Tente reformular sua pergunta.'
     };
   }
 }
 
-// Função para análise de sentimentos/emoções no texto
+// Função para análise de sentimentos
 export async function analyzeSentiment(text, provider = 'google') {
   try {
     const options = {
@@ -140,71 +142,71 @@ function isEducationalQuestion(question) {
     'biologia', 'literatura', 'filme', 'curiosidade', 'como funciona',
     'explique', 'o que é', 'defina', 'pesquisa', 'científico',
     'tecnologia', 'programação', 'linguagem', 'cultura', 'arte',
-    'musica', ' filosofia', 'psicologia', 'economia', 'geografia'
+    'musica', 'filosofia', 'psicologia', 'economia', 'geografia'
   ];
   
   const lowerQuestion = question.toLowerCase();
   return educationalTopics.some(topic => lowerQuestion.includes(topic));
 }
 
-// Função para salvar interação no Supabase
-async function saveInteraction(question, response, provider) {
+// ✅ FUNÇÃO saveInteraction CORRIGIDA (AGORA CHAMA saveEdenInteraction)
+async function saveEdenInteraction(question, response, provider) {
   try {
-    const user = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     
-    if (user.data.user) {
-      // Salvar pergunta do usuário
+    if (user) {
+      // 1. Salvar pergunta do usuário
       const { data: questionData, error: questionError } = await supabase
         .from('user_questions')
-        .insert([
-          {
-            user_id: user.data.user.id,
-            question: question,
-            category: detectCategory(question),
-            created_at: new Date()
-          }
-        ])
-        .select();
+        .insert({
+          user_id: user.id,
+          question: question,
+          category: detectCategory(question),
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single();
 
       if (questionError) throw questionError;
 
-      // Salvar resposta da IA
+      // 2. Extrair resposta da IA
       const aiResponse = extractAIResponse(response, provider);
       
+      // 3. Salvar resposta da IA
       const { error: responseError } = await supabase
         .from('ai_responses')
-        .insert([
-          {
-            question_id: questionData[0].id,
-            response: aiResponse,
-            provider: provider,
-            created_at: new Date()
-          }
-        ]);
+        .insert({
+          question_id: questionData.id,
+          response: aiResponse,
+          provider: provider,
+          created_at: new Date().toISOString()
+        });
 
       if (responseError) throw responseError;
+      
+      return true;
     }
+    return false;
   } catch (error) {
     console.error('Erro ao salvar interação:', error);
+    return false;
   }
 }
 
-// Função para extrair resposta da IA da resposta da API
+// Função para extrair resposta da IA
 function extractAIResponse(response, provider) {
   try {
-    // A estrutura da resposta varia por provider
     if (response[provider] && response[provider].generated_text) {
       return response[provider].generated_text;
     }
     
-    // Fallback para estrutura alternativa
     for (const key in response) {
       if (response[key] && response[key].generated_text) {
         return response[key].generated_text;
       }
     }
     
-    return JSON.stringify(response); // Fallback extremo
+    return JSON.stringify(response);
   } catch (error) {
     return 'Resposta não disponível';
   }
@@ -231,12 +233,12 @@ function detectCategory(question) {
   return 'geral';
 }
 
-// Função para obter histórico de interações do usuário
-export async function getUserHistory() {
+// ✅ FUNÇÃO RENOMEADA para evitar conflito (era getUserHistory)
+export async function getEdenAIHistory() {
   try {
-    const user = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user.data.user) {
+    if (!user) {
       return { success: false, error: 'Usuário não autenticado' };
     }
 
@@ -253,7 +255,7 @@ export async function getUserHistory() {
           created_at
         )
       `)
-      .eq('user_id', user.data.user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(10);
 
@@ -267,15 +269,14 @@ export async function getUserHistory() {
 }
 
 // Função para obter sugestões baseadas no histórico
-export async function getSuggestions() {
+export async function getEdenAISuggestions() {
   try {
-    const history = await getUserHistory();
+    const history = await getEdenAIHistory();
     
     if (!history.success) {
       return getDefaultSuggestions();
     }
 
-    // Analisar histórico para sugerir tópicos relacionados
     const categories = {};
     history.data?.forEach(interaction => {
       if (interaction.category) {
@@ -283,7 +284,6 @@ export async function getSuggestions() {
       }
     });
 
-    // Ordenar categorias por frequência
     const sortedCategories = Object.entries(categories)
       .sort((a, b) => b[1] - a[1])
       .map(([category]) => category);
@@ -339,14 +339,12 @@ function generateSuggestions(categories) {
 
   const suggestions = [];
   
-  // Adicionar sugestões das categorias mais frequentes
   categories.forEach(category => {
     if (suggestionsMap[category] && suggestions.length < 5) {
       suggestions.push(...suggestionsMap[category].slice(0, 2));
     }
   });
 
-  // Completar com sugestões gerais se necessário
   if (suggestions.length < 5) {
     suggestions.push(...getDefaultSuggestions().slice(0, 5 - suggestions.length));
   }
@@ -358,6 +356,6 @@ export default {
   askEdenAI,
   analyzeSentiment,
   summarizeText,
-  getUserHistory,
-  getSuggestions
+  getEdenAIHistory,
+  getEdenAISuggestions
 };
