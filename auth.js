@@ -1,14 +1,13 @@
-// auth.js - Sistema de autenticação com Supabase
-
-import { createClient } from '@supabase/supabase-js'
-
 // Configuração do Supabase
-const supabaseUrl = 'https://seu-projeto.supabase.co'
-const supabaseAnonKey = 'sua-chave-anon-publica'
+const supabaseUrl = 'https://nxomedltnpwwdutgylma.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU'
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// auth.js - Sistema de autenticação com Supabase (Adaptado)
 
-// Função de cadastro
-export async function signUp(email, password, userData) {
+import { supabase } from './supabase-client.js' // Importa o cliente único
+
+// Função de cadastro simplificada
+export async function signUp(email, password) {
   try {
     // 1. Criar usuário no Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -18,30 +17,21 @@ export async function signUp(email, password, userData) {
 
     if (authError) throw authError
 
-    // 2. Inserir dados extras na tabela profiles
-    const { data: profileData, error: profileError } = await supabase
+    // 2. Criar perfil básico (apenas id e created_at)
+    const { error: profileError } = await supabase
       .from('profiles')
-      .insert([
-        {
-          id: authData.user.id,
-          email: email,
-          full_name: userData.fullName,
-          interests: userData.interests,
-          created_at: new Date(),
-        },
-      ])
-      .select()
+      .insert([{ id: authData.user.id }])
 
     if (profileError) throw profileError
 
-    return { success: true, data: { authData, profileData } }
+    return { success: true, data: authData }
   } catch (error) {
     console.error('Erro no cadastro:', error)
     return { success: false, error: error.message }
   }
 }
 
-// Função de login
+// Função de login (mantida igual)
 export async function signIn(email, password) {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -58,7 +48,7 @@ export async function signIn(email, password) {
   }
 }
 
-// Função de logout
+// Função de logout (mantida igual)
 export async function signOut() {
   try {
     const { error } = await supabase.auth.signOut()
@@ -70,47 +60,27 @@ export async function signOut() {
   }
 }
 
-// Verificar estado de autenticação
+// Verificar estado de autenticação (mantida)
 export function getAuthState() {
   return supabase.auth.getSession()
 }
 
-// Ouvir mudanças de estado de autenticação
+// Ouvir mudanças de estado (mantida)
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange((event, session) => {
-    callback(event, session)
-  })
+  return supabase.auth.onAuthStateChange(callback)
 }
 
-// Obter usuário atual
+// Obter usuário atual (mantida)
 export function getCurrentUser() {
   return supabase.auth.getUser()
 }
 
-// Atualizar perfil do usuário
-export async function updateProfile(userId, updates) {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', userId)
-      .select()
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao atualizar perfil:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// Buscar perfil do usuário
+// Buscar perfil do usuário (simplificada - agora só retorna id e created_at)
 export async function getUserProfile(userId) {
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, created_at')
       .eq('id', userId)
       .single()
 
@@ -123,7 +93,7 @@ export async function getUserProfile(userId) {
   }
 }
 
-// Redefinir senha
+// Redefinir senha (mantida)
 export async function resetPassword(email) {
   try {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -139,7 +109,7 @@ export async function resetPassword(email) {
   }
 }
 
-// Atualizar senha
+// Atualizar senha (mantida)
 export async function updatePassword(newPassword) {
   try {
     const { data, error } = await supabase.auth.updateUser({
@@ -154,3 +124,6 @@ export async function updatePassword(newPassword) {
     return { success: false, error: error.message }
   }
 }
+
+// REMOVIDA: função updateProfile (não é mais necessária)
+// REMOVIDA: inserção de dados extras no signUp
