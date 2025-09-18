@@ -1,9 +1,4 @@
-// Configuração do Supabase
-const supabaseUrl = 'https://nxomedltnpwwdutgylma.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU'
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-// auth.js - Sistema de autenticação com Supabase (Adaptado)
-
+import { supabase } from './supabase-client.js'
 import { supabase } from './supabase-client.js' // Importa o cliente único
 
 // Função de cadastro simplificada

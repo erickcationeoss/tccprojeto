@@ -1,7 +1,6 @@
 // eden-ai.js - Integração com API da Eden AI (Versão Corrigida)
 
 import { supabase } from './supabase-client.js';
-import axios from 'axios'; // ✅ IMPORT AXIOS ADICIONADO
 
 // Configuração da API Eden AI
 const EDEN_AI_API_KEY = import.meta.env.VITE_EDEN_AI_API_KEY;
