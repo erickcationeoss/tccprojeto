@@ -1,5 +1,4 @@
 import { supabase } from './supabase-client.js'
-import { supabase } from './supabase-client.js' // Importa o cliente único
 
 // Função de cadastro simplificada
 export async function signUp(email, password) {
