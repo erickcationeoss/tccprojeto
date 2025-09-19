@@ -1,13 +1,11 @@
-// supabase.js - Configuração e utilitários do Supabase
+// supabase-client.js - Cliente centralizado do Supabase (Versão CDN)
 
-import { createClient } from '@supabase/supabase-js'
-
-// Configuração do cliente Supabase
+// Configuração do cliente Supabase (agora usa a global Supabase do CDN)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-// Inicializar cliente Supabase
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Inicializar cliente Supabase (agora usando a global window.supabase)
+export const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey)
 
 // ===== FUNÇÕES DE INICIALIZAÇÃO DO BANCO =====
 
