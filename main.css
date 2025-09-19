@@ -39,9 +39,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    position: relative;
 }
 
-/* Animação de partículas (suave) */
+/* Animações */
 @keyframes float {
     0%, 100% { 
         transform: translateY(0) rotate(0deg); 
@@ -75,6 +76,18 @@ body {
     }
 }
 
+@keyframes typing {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Partículas */
 .particles-container {
     position: fixed;
     top: 0;
@@ -93,11 +106,56 @@ body {
     animation: float 12s infinite ease-in-out;
 }
 
-.particle:nth-child(1) { top: 20%; left: 10%; width: 6px; height: 6px; animation-delay: 0s; }
-.particle:nth-child(2) { top: 60%; left: 80%; width: 8px; height: 8px; animation-delay: 3s; }
-.particle:nth-child(3) { top: 40%; left: 60%; width: 4px; height: 4px; animation-delay: 6s; }
+.particle:nth-child(1) { 
+    top: 20%; 
+    left: 10%; 
+    width: 6px; 
+    height: 6px; 
+    animation-delay: 0s; 
+}
 
-/* Tela de autenticação (centralizada) */
+.particle:nth-child(2) { 
+    top: 60%; 
+    left: 80%; 
+    width: 8px; 
+    height: 8px; 
+    animation-delay: 3s; 
+}
+
+.particle:nth-child(3) { 
+    top: 40%; 
+    left: 60%; 
+    width: 4px; 
+    height: 4px; 
+    animation-delay: 6s; 
+}
+
+/* Controle de telas */
+#authScreen {
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.5s ease;
+}
+
+#chatScreen {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+    transition: all 0.5s ease;
+}
+
+#authScreen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#chatScreen.active {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+}
+
+/* Tela de autenticação */
 .auth-container {
     background: rgba(26, 26, 26, 0.95);
     border-radius: 24px;
@@ -110,7 +168,6 @@ body {
     animation: fadeIn 1.2s ease-out;
     position: relative;
     z-index: 2;
-    margin: 0 auto;
 }
 
 .luxury-header {
@@ -169,11 +226,11 @@ body {
 
 .auth-form {
     display: none;
-    animation: fadeIn 0.8s ease-out;
 }
 
 .auth-form.active {
     display: block;
+    animation: fadeIn 0.8s ease-out;
 }
 
 .form-group {
@@ -256,9 +313,8 @@ body {
     box-shadow: 0 10px 30px rgba(255, 140, 66, 0.5);
 }
 
-/* Tela do Chat (centralizada) */
+/* Tela do Chat */
 .chat-container {
-    display: none;
     background: rgba(26, 26, 26, 0.95);
     border-radius: 24px;
     overflow: hidden;
@@ -268,8 +324,8 @@ body {
     max-height: 800px;
     width: 100%;
     max-width: 1200px;
-    animation: fadeIn 1.5s ease-out;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-header {
@@ -345,6 +401,7 @@ body {
 
 .chat-content {
     display: flex;
+    flex: 1;
     height: calc(100% - 160px);
 }
 
@@ -381,6 +438,7 @@ body {
 .topic-item:hover {
     background: rgba(255, 255, 255, 0.1);
     border-left-color: var(--orange-primary);
+    transform: translateX(5px);
 }
 
 .chat-main {
@@ -392,33 +450,35 @@ body {
 .chat-messages {
     flex: 1;
     padding: 25px;
+    overflow-y: auto;
     background: rgba(255, 255, 255, 0.02);
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    .chat-messages {
-    overflow-y: auto;  /* ✅ Correto */
-    height: 100%;      /* ✅ Necessário */
-}
+    gap: 20px;
 }
 
 .message {
-    margin-bottom: 25px;
     max-width: 70%;
-    animation: fadeIn 0.8s ease-out;
-    align-self: flex-start;
+    animation: typing 0.3s ease-out;
 }
 
 .message.user {
     align-self: flex-end;
 }
 
+.message.ai {
+    align-self: flex-start;
+}
+
 .message-content {
     padding: 20px;
     border-radius: 20px;
+    position: relative;
+}
+
+.message.ai .message-content {
     background: rgba(255, 140, 66, 0.1);
     border: 1px solid rgba(255, 140, 66, 0.2);
-    position: relative;
 }
 
 .message.user .message-content {
@@ -459,8 +519,13 @@ body {
     font-size: 1.1rem;
     color: var(--text-white);
     min-height: 60px;
-    max-height: 120px;
+    max-height: 150px;
     outline: none;
+    transition: all 0.3s ease;
+}
+
+.luxury-textarea:focus {
+    border-color: var(--gold-accent);
 }
 
 .luxury-textarea::placeholder {
@@ -475,6 +540,9 @@ body {
     cursor: pointer;
     color: var(--text-white);
     transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .send-btn:hover {
@@ -484,11 +552,11 @@ body {
 
 /* Utilidades */
 .fade-in {
-    animation: fadeIn 1.2s ease-out;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .fade-out {
-    animation: fadeOut 1.2s ease-out;
+    animation: fadeOut 0.5s ease-out;
 }
 
 .text-center {
@@ -508,7 +576,6 @@ body {
     
     .auth-container {
         padding: 40px 20px;
-        margin: 20px;
     }
     
     .luxury-title {
@@ -517,7 +584,7 @@ body {
     
     .chat-container {
         height: 90vh;
-        margin: 20px;
+        margin: 0;
     }
     
     .chat-content {
@@ -542,6 +609,15 @@ body {
     .chat-title {
         font-size: 2rem;
     }
+    
+    .chat-tabs {
+        padding: 10px 20px;
+    }
+    
+    .tab {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -560,105 +636,24 @@ body {
     
     .chat-tabs {
         padding: 10px 15px;
+        flex-wrap: wrap;
+        gap: 5px;
     }
     
     .tab {
-        padding: 10px 15px;
-        font-size: 0.9rem;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+    }
+    
+    .chat-header {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .logout-btn {
+        padding: 8px 16px;
     }
 }
-/* Animação de digitação */
-@keyframes typing {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.message {
-    animation: typing 0.3s ease-out;
-}
-
-/* Efeito de fade para as abas */
-.chat-content > div {
-    display: none;
-    animation: fadeIn 0.5s ease-out;
-}
-
-.chat-content > div:first-child {
-    display: block;
-}
-
-/* Melhorias no textarea */
-.luxury-textarea {
-    transition: all 0.3s ease;
-    min-height: 60px;
-    max-height: 150px;
-}
-
-.luxury-textarea:focus {
-    border-color: var(--gold-accent);
-}
-
-/* Efeito hover nos tópicos */
-.topic-item {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.topic-item:hover {
-    transform: translateX(5px);
-    background: rgba(255, 140, 66, 0.1) !important;
-}
-
-.chat-container {
-display: flex !important; /* Força flex */
-flex-direction: column;
-height: 85vh !important; /* Força altura */
-width: 100% !important;
-}
-
-.hidden {
-display: none !important;
-}
-
-.chat-container {
-opacity: 0;
-transform: translateY(20px);
-transition: all 0.5s ease;
-}
-
-.chat-container.active {
-opacity: 1;
-transform: translateY(0);
-}
-
-/* Controle de visibilidade das telas */
-#authScreen, #chatScreen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    max-width: 1200px;
-    transition: all 0.5s ease;
-}
-
-#authScreen {
-    opacity: 1;
-    visibility: visible;
-}
-
-#chatScreen {
-    opacity: 0;
-    visibility: hidden;
-}
-
-#authScreen.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-#chatScreen.active {
-    opacity: 1;
-    visibility: visible;
-}
-
