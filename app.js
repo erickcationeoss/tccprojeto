@@ -87,12 +87,6 @@ function setupAuthForms() {
     }
 }
 
-
-function showChatScreen() {
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('chatScreen').style.display = 'block';
-    console.log('Chat screen mostrada');
-    
     // Inicializar funcionalidades do chat
     initChat();
     
@@ -102,7 +96,6 @@ function showChatScreen() {
         document.getElementById('chatScreen').offsetHeight; // force reflow
         document.getElementById('chatScreen').style.opacity = '1';
     }, 50);
-}
 
 // Função para voltar para auth
 function showAuthScreen() {
