@@ -10,3 +10,4 @@ function initApp() {
 document.addEventListener('DOMContentLoaded', initApp);
 console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL)
 console.log('Eden AI Key existe?', !!import.meta.env.VITE_EDEN_AI_API_KEY)
+const EDEN_AI_BASE_URL = 'https://api.edenai.run/v2';

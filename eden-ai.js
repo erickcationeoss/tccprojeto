@@ -3,8 +3,8 @@
 import { supabase } from './supabase-client.js';
 
 // Configuração da API Eden AI
-const EDEN_AI_API_KEY = import.meta.env.VITE_EDEN_AI_API_KEY;
-const EDEN_AI_BASE_URL = 'https://api.edenai.run/v2';
+// Altere para:
+const EDEN_AI_API_KEY = window.ENV.VITE_EDEN_AI_API_KEY
 
 // Lista de provedores disponíveis
 const PROVIDERS = {

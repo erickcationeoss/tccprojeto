@@ -1,8 +1,6 @@
-// supabase-client.js - Cliente centralizado do Supabase (Versão CDN)
-
-// Configuração do cliente Supabase (agora usa a global Supabase do CDN)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+//inicialização do supabase
+const supabaseUrl = window.ENV.VITE_SUPABASE_URL
+const supabaseAnonKey = window.ENV.VITE_SUPABASE_ANON_KEY
 
 // Inicializar cliente Supabase (agora usando a global window.supabase)
 export const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey)
