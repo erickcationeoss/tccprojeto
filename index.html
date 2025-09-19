@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduAI - Assistente de Estudos</title>
@@ -12,7 +11,7 @@
         window.ENV = {
             VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
             VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
-            VITE_EDEN_AI_API_KEY: "https://api.edenai.run/v2/aiproducts/askyoda/v2/{project_id}/add_url"
+            VITE_EDEN_AI_API_KEY: "SUA_CHAVE_EDEN_AI_AQUI" // COLE SUA CHAVE REAL AQUI
         }
     </script>
 
@@ -20,11 +19,11 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
 
-    <!-- ✅ POR FIM SEUS MODULES -->
-     <script type="module" src="global.js"></script>
-    <script type="module" src="auth.js"></script>
-    <script type="module" src="eden-ai.js"></script>
-    <script type="module" src="app.js"></script>
+    <!-- ✅ POR FIM SEUS SCRIPTS (SEM MODULE!) -->
+    <script src="supabase-client.js"></script>
+    <script src="auth.js"></script>
+    <script src="eden-ai.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
     <div class="luxury-background">
@@ -52,24 +51,7 @@
                 <form class="auth-form active" id="loginForm">
                     <div class="form-group">
                         <input type="email" id="loginEmail" required class="luxury-input">
-                        <label for="loginEmail" cl    
-    <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
-    <script>
-        window.ENV = {
-            VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
-            VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
-            VITE_EDEN_AI_API_KEY: "SUA_CHAVE_EDEN_AI_AQUI"
-        }
-    </script>
-
-    <!-- ✅ DEPOIS OS CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
-
-    <!-- ✅ POR FIM SEUS MODULES -->
-    <script type="module" src="auth.js"></script>
-    <script type="module" src="eden-ai.js"></script>
-    <script type="module" src="app.js"></script>
+                        <label for="loginEmail" class="luxury-label">Email</label>
                     </div>
                     <div class="form-group">
                         <input type="password" id="loginPassword" required class="luxury-input">
@@ -102,24 +84,7 @@
                         <h2 class="chat-title">Edu<span class="accent">AI</span></h2>
                         <p class="chat-subtitle">Assistente pessoal de estudos</p>
                     </div>
-                    <div class="header-right">    
-    <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
-    <script>
-        window.ENV = {
-            VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
-            VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
-            VITE_EDEN_AI_API_KEY: "SUA_CHAVE_EDEN_AI_AQUI"
-        }
-    </script>
-
-    <!-- ✅ DEPOIS OS CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
-
-    <!-- ✅ POR FIM SEUS MODULES -->
-    <script type="module" src="auth.js"></script>
-    <script type="module" src="eden-ai.js"></script>
-    <script type="module" src="app.js"></script>
+                    <div class="header-right">
                         <button class="logout-btn">Sair</button>
                     </div>
                 </div>

@@ -148,9 +148,22 @@ function initApp() {
     
     // Configurar formulários
     setupAuthForms();
+
     
-    // Configurar logout
-    setupLogout();
+// Adicione ESTA FUNÇÃO no app.js (antes de initApp)
+function setupLogout() {
+    const logoutBtn = document.querySelector('.logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await window.signOut();
+                showAuthScreen();
+            } catch (error) {
+                alert('Erro ao sair: ' + error.message);
+            }
+        });
+    }
+}
     
     // Verificar se já está logado
     checkAuthState();
