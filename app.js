@@ -123,42 +123,7 @@ function showAuthScreen() {
     }
 }
 
-// INICIALIZAÇÃO CORRIGIDA
-function initApp() {
-    console.log('App inicializado');
-    
-    // Configurar estado inicial CORRETO
-    const authScreen = document.getElementById('authScreen');
-    const chatScreen = document.getElementById('chatScreen');
-    
-    if (authScreen) {
-        authScreen.classList.remove('hidden'); // Garantir que auth está visível
-    }
-    
-    if (chatScreen) {
-        chatScreen.classList.remove('active'); // Garantir que chat está escondido
-    }
-    
-    // Resto da inicialização...
-    setupAuthTabs();
-    setupAuthForms();
-    setupLogout();
-    checkAuthState();
-}
 
-function setupLogout() {
-    const logoutBtn = document.querySelector('.logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await window.signOut();
-                showAuthScreen();
-            } catch (error) {
-                alert('Erro ao sair: ' + error.message);
-            }
-        });
-    }
-}
 
 // Inicialização da aplicação
 function initApp() {

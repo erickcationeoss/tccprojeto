@@ -1,11 +1,11 @@
+// eden-ai.js - Integração com API da Eden AI (Versão GitHub Workspaces)
 
-// eden-ai.js - Integração com API da Eden AI (Versão Corrigida)
+// ✅ CONFIGURAÇÃO PARA GITHUB WORKSPACES (sem variáveis de ambiente)
+const EDEN_AI_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZTNjNGNjZGUtNjE5YS00OWI5LTg4NWUtNTdmZGE5YzViNzFjIiwidHlwZSI6ImFwaV90b2tlbiJ9.RNVXFPhNnq3ADj9knGTuyVPjdFIzCUkRpyVsVJSZMuM"; // Cole sua chave diretamente
+const EDEN_AI_BASE_URL = "https://api.edenai.run/v2/aiproducts/askyoda/v2/{project_id}/add_text";
 
-import { supabase } from './supabase-client.js';
-
-// Configuração da API Eden AI
-// Altere para:
-const EDEN_AI_API_KEY = window.ENV.VITE_EDEN_AI_API_KEY
+// ✅ SUPABASE configurado para funcionar sem import (usando global)
+const supabase = window.supabase;
 
 // Lista de provedores disponíveis
 const PROVIDERS = {
@@ -15,7 +15,7 @@ const PROVIDERS = {
 };
 
 // Função principal para fazer perguntas à IA
-export async function askEdenAI(question, provider = 'openai') {
+async function askEdenAI(question, provider = 'openai') {
   try {
     // Validar se a pergunta é sobre estudos/curiosidades
     if (!isEducationalQuestion(question)) {
@@ -45,12 +45,22 @@ export async function askEdenAI(question, provider = 'openai') {
 
     const response = await axios.request(options);
     
-    // Salvar a interação no Supabase (FUNÇÃO CORRIGIDA)
-    const saved = await saveEdenInteraction(question, response.data, provider);
+    // ✅ ESTRUTURA CORRETA da resposta Eden AI
+    let aiResponse = '';
+    if (response.data[provider] && response.data[provider].generated_text) {
+      aiResponse = response.data[provider].generated_text;
+    } else if (response.data.google && response.data.google.generated_text) {
+      aiResponse = response.data.google.generated_text; // Fallback
+    } else {
+      aiResponse = 'Desculpe, não consegui processar sua pergunta.';
+    }
+    
+    // Salvar a interação no Supabase
+    const saved = await saveEdenInteraction(question, aiResponse, provider);
     
     return {
       success: true,
-      data: response.data,
+      data: aiResponse, // ✅ Retorna só o texto, não o objeto completo
       provider: provider,
       savedToDB: saved
     };
@@ -72,7 +82,7 @@ export async function askEdenAI(question, provider = 'openai') {
 }
 
 // Função para análise de sentimentos
-export async function analyzeSentiment(text, provider = 'google') {
+async function analyzeSentiment(text, provider = 'google') {
   try {
     const options = {
       method: 'POST',
@@ -102,37 +112,6 @@ export async function analyzeSentiment(text, provider = 'google') {
   }
 }
 
-// Função para resumo de texto
-export async function summarizeText(text, provider = 'microsoft') {
-  try {
-    const options = {
-      method: 'POST',
-      url: `${EDEN_AI_BASE_URL}/text/summarize`,
-      headers: {
-        'Authorization': `Bearer ${EDEN_AI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      data: {
-        providers: provider,
-        text: text,
-        output_sentences: 3
-      }
-    };
-
-    const response = await axios.request(options);
-    return {
-      success: true,
-      data: response.data
-    };
-  } catch (error) {
-    console.error('Erro ao resumir texto:', error);
-    return {
-      success: false,
-      error: error.message
-    };
-  }
-}
-
 // Função para validação de perguntas educacionais
 function isEducationalQuestion(question) {
   const educationalTopics = [
@@ -149,8 +128,8 @@ function isEducationalQuestion(question) {
   return educationalTopics.some(topic => lowerQuestion.includes(topic));
 }
 
-// ✅ FUNÇÃO saveInteraction CORRIGIDA (AGORA CHAMA saveEdenInteraction)
-async function saveEdenInteraction(question, response, provider) {
+// Função para salvar interação
+async function saveEdenInteraction(question, aiResponse, provider) {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     
@@ -169,9 +148,6 @@ async function saveEdenInteraction(question, response, provider) {
 
       if (questionError) throw questionError;
 
-      // 2. Extrair resposta da IA
-      const aiResponse = extractAIResponse(response, provider);
-      
       // 3. Salvar resposta da IA
       const { error: responseError } = await supabase
         .from('ai_responses')
@@ -190,25 +166,6 @@ async function saveEdenInteraction(question, response, provider) {
   } catch (error) {
     console.error('Erro ao salvar interação:', error);
     return false;
-  }
-}
-
-// Função para extrair resposta da IA
-function extractAIResponse(response, provider) {
-  try {
-    if (response[provider] && response[provider].generated_text) {
-      return response[provider].generated_text;
-    }
-    
-    for (const key in response) {
-      if (response[key] && response[key].generated_text) {
-        return response[key].generated_text;
-      }
-    }
-    
-    return JSON.stringify(response);
-  } catch (error) {
-    return 'Resposta não disponível';
   }
 }
 
@@ -233,8 +190,8 @@ function detectCategory(question) {
   return 'geral';
 }
 
-// ✅ FUNÇÃO RENOMEADA para evitar conflito (era getUserHistory)
-export async function getEdenAIHistory() {
+// Buscar histórico
+async function getEdenAIHistory() {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     
@@ -268,106 +225,9 @@ export async function getEdenAIHistory() {
   }
 }
 
-// Função para obter sugestões baseadas no histórico
-export async function getEdenAISuggestions() {
-  try {
-    const history = await getEdenAIHistory();
-    
-    if (!history.success) {
-      return getDefaultSuggestions();
-    }
-
-    const categories = {};
-    history.data?.forEach(interaction => {
-      if (interaction.category) {
-        categories[interaction.category] = (categories[interaction.category] || 0) + 1;
-      }
-    });
-
-    const sortedCategories = Object.entries(categories)
-      .sort((a, b) => b[1] - a[1])
-      .map(([category]) => category);
-
-    return generateSuggestions(sortedCategories);
-  } catch (error) {
-    console.error('Erro ao gerar sugestões:', error);
-    return getDefaultSuggestions();
-  }
-}
-
-// Sugestões padrão
-function getDefaultSuggestions() {
-  return [
-    'Explique a teoria da relatividade de Einstein',
-    'Como funciona a fotossíntese?',
-    'Qual a história da Segunda Guerra Mundial?',
-    'Como aprender programação mais eficientemente?',
-    'Quais são os principais movimentos artísticos do século XX?'
-  ];
-}
-
-// Gerar sugestões baseadas nas categorias
-function generateSuggestions(categories) {
-  const suggestionsMap = {
-    'ciência': [
-      'Explique a teoria da relatividade',
-      'Como funciona a fotossíntese?',
-      'O que são buracos negros?'
-    ],
-    'tecnologia': [
-      'Como começar com inteligência artificial?',
-      'Quais as linguagens de programação mais populares?',
-      'Explique o que é blockchain'
-    ],
-    'história': [
-      'Resuma a Revolução Francesa',
-      'Quais foram as causas da Primeira Guerra Mundial?',
-      'Conte sobre o Império Romano'
-    ],
-    'arte': [
-      'Quais são os principais movimentos artísticos?',
-      'Explique o impressionismo',
-      'Quem foram os maiores compositores clássicos?'
-    ],
-    'educação': [
-      'Como melhorar minha concentração nos estudos?',
-      'Quais técnicas de memorização são mais eficazes?',
-      'Como criar um cronograma de estudos eficiente?'
-    ],
-    'geral': getDefaultSuggestions()
-  };
-
-  const suggestions = [];
-  
-  categories.forEach(category => {
-    if (suggestionsMap[category] && suggestions.length < 5) {
-      suggestions.push(...suggestionsMap[category].slice(0, 2));
-    }
-  });
-
-  if (suggestions.length < 5) {
-    suggestions.push(...getDefaultSuggestions().slice(0, 5 - suggestions.length));
-  }
-
-  return suggestions.slice(0, 5);
-}
-
-export default {
-  askEdenAI,
-  analyzeSentiment,
-  summarizeText,
-  getEdenAIHistory,
-  getEdenAISuggestions
-};
+// ✅ EXPORTAÇÃO PARA ESCOPO GLOBAL (sem modules)
 window.askEdenAI = askEdenAI;
 window.getEdenAIHistory = getEdenAIHistory;
+window.analyzeSentiment = analyzeSentiment;
 
-function addMessage(text, type = 'ai') {
-    const chatMessages = document.getElementById('chatMessages');
-    // ... criar e adicionar a mensagem ...
-    
-    // ⭐⭐ ESTA LINHA É CRÍTICA ⭐⭐
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    return messageDiv;
-}
+console.log('Eden AI carregado - GitHub Workspaces Edition');
