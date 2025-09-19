@@ -1,3 +1,10 @@
+// Evitar redeclaração
+if (typeof showChatScreen === 'undefined') {
+    function showChatScreen() {
+        // ... código ...
+    }
+}
+
 // app.js - Controle principal da aplicação
 console.log('Aplicação iniciada!');
 
@@ -80,11 +87,21 @@ function setupAuthForms() {
     }
 }
 
-// Função para mostrar tela de chat
+
 function showChatScreen() {
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('chatScreen').style.display = 'block';
     console.log('Chat screen mostrada');
+    
+    // Inicializar funcionalidades do chat
+    initChat();
+    
+    // Forçar redraw para garantir que animações funcionem
+    setTimeout(() => {
+        document.getElementById('chatScreen').style.opacity = '0';
+        document.getElementById('chatScreen').offsetHeight; // force reflow
+        document.getElementById('chatScreen').style.opacity = '1';
+    }, 50);
 }
 
 // Função para voltar para auth

@@ -1,3 +1,4 @@
+
 // eden-ai.js - Integração com API da Eden AI (Versão Corrigida)
 
 import { supabase } from './supabase-client.js';
@@ -358,10 +359,6 @@ export default {
   getEdenAIHistory,
   getEdenAISuggestions
 };
-
-// ... (o resto do seu eden-ai.js) ...
-
-// ===== EXPORTAÇÃO PARA ESCOPO GLOBAL =====
 window.askEdenAI = askEdenAI;
 window.getEdenAIHistory = getEdenAIHistory;
 

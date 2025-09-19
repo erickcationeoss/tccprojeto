@@ -1,3 +1,4 @@
+
 //inicialização do supabase
 const supabaseUrl = window.ENV.VITE_SUPABASE_URL
 const supabaseAnonKey = window.ENV.VITE_SUPABASE_ANON_KEY
