@@ -364,3 +364,13 @@ export default {
 // ===== EXPORTAÇÃO PARA ESCOPO GLOBAL =====
 window.askEdenAI = askEdenAI;
 window.getEdenAIHistory = getEdenAIHistory;
+
+function addMessage(text, type = 'ai') {
+    const chatMessages = document.getElementById('chatMessages');
+    // ... criar e adicionar a mensagem ...
+    
+    // ⭐⭐ ESTA LINHA É CRÍTICA ⭐⭐
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return messageDiv;
+}
