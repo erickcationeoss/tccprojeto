@@ -118,6 +118,3 @@ export async function updatePassword(newPassword) {
     return { success: false, error: error.message }
   }
 }
-
-// REMOVIDA: função updateProfile (não é mais necessária)
-// REMOVIDA: inserção de dados extras no signUp
