@@ -80,22 +80,20 @@ function setupAuthForms() {
     }
 }
 
-// FUNÇÃO SHOWCHATSCREEN - VERSÃO SIMPLIFICADA E FUNCIONAL
+
 function showChatScreen() {
     const authScreen = document.getElementById('authScreen');
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Remover animações complexas - usar apenas display
-        authScreen.style.display = 'none';
-        chatScreen.style.display = 'block';
+        // Remover classe hidden da auth
+        authScreen.classList.remove('hidden');
+        
+        // Adicionar classe active na chat
+        chatScreen.classList.add('active');
         
         console.log('Chat screen mostrada');
-        
-        // Inicializar chat DEPOIS de mostrar
-        setTimeout(() => {
-            initChat();
-        }, 100);
+        initChat();
     }
 }
 
@@ -104,9 +102,11 @@ function showAuthScreen() {
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Simples e direto - sem animações complexas
-        chatScreen.style.display = 'none';
-        authScreen.style.display = 'block';
+        // Remover classe active da chat
+        chatScreen.classList.remove('active');
+        
+        // Remover classe hidden da auth
+        authScreen.classList.remove('hidden');
         
         console.log('Auth screen mostrada');
     }
