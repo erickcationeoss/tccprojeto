@@ -88,13 +88,16 @@ function setupAuthForms() {
 }
 
 function showChatScreen() {
+   function showChatScreen() {
+    // Transição suave
     document.getElementById('authScreen').classList.add('hidden');
-    document.getElementById('chatScreen').classList.remove('hidden');
-    
-    // Forçar reflow para animações
+ 
     setTimeout(() => {
         document.getElementById('chatScreen').classList.add('active');
-    }, 50);
+        // Garantir que o chat ocupe toda a altura
+        document.getElementById('chatScreen').style.height = '85vh';
+    }, 100);
+}
 }
     console.log('Chat screen mostrada');
     
@@ -107,7 +110,7 @@ function showChatScreen() {
         document.getElementById('chatScreen').offsetHeight; // force reflow
         document.getElementById('chatScreen').style.opacity = '1';
     }, 50);
-    
+
 
 // Função para voltar para auth
 function showAuthScreen() {
