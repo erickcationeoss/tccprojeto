@@ -1,10 +1,3 @@
-// Evitar redeclaração
-if (typeof showChatScreen === 'undefined') {
-    function showChatScreen() {
-        // ... código ...
-    }
-}
-
 // app.js - Controle principal da aplicação
 console.log('Aplicação iniciada!');
 
@@ -87,35 +80,53 @@ function setupAuthForms() {
     }
 }
 
+// FUNÇÃO SHOWCHATSCREEN CORRIGIDA
 function showChatScreen() {
-    // Use visibility em vez de display
-    document.getElementById('authScreen').classList.add('hidden');
-    document.getElementById('chatScreen').classList.add('active');
+    const authScreen = document.getElementById('authScreen');
+    const chatScreen = document.getElementById('chatScreen');
     
-    // Forçar reflow para animação
-    setTimeout(() => {
-        document.getElementById('chatScreen').style.opacity = '1';
-    }, 50);
+    if (authScreen && chatScreen) {
+        // Esconder auth screen com animação
+        authScreen.style.opacity = '0';
+        setTimeout(() => {
+            authScreen.style.display = 'none';
+            
+            // Mostrar chat screen com animação
+            chatScreen.style.display = 'block';
+            setTimeout(() => {
+                chatScreen.style.opacity = '1';
+            }, 50);
+            
+        }, 300); // Tempo para a animação de fade out
+        
+        console.log('Chat screen mostrada');
+        
+        // Inicializar funcionalidades do chat
+        initChat();
+    }
 }
 
-    console.log('Chat screen mostrada');
-    
-    // Inicializar funcionalidades do chat
-    initChat();
-    
-    // Forçar redraw para garantir que animações funcionem
-    setTimeout(() => {
-        document.getElementById('chatScreen').style.opacity = '0';
-        document.getElementById('chatScreen').offsetHeight; // force reflow
-        document.getElementById('chatScreen').style.opacity = '1';
-    }, 50);
-
-
-// Função para voltar para auth
+// FUNÇÃO SHOWAUTHSCREEN CORRIGIDA
 function showAuthScreen() {
-    document.getElementById('authScreen').style.display = 'block';
-    document.getElementById('chatScreen').style.display = 'none';
-    console.log('Auth screen mostrada');
+    const authScreen = document.getElementById('authScreen');
+    const chatScreen = document.getElementById('chatScreen');
+    
+    if (authScreen && chatScreen) {
+        // Esconder chat screen com animação
+        chatScreen.style.opacity = '0';
+        setTimeout(() => {
+            chatScreen.style.display = 'none';
+            
+            // Mostrar auth screen com animação
+            authScreen.style.display = 'block';
+            setTimeout(() => {
+                authScreen.style.opacity = '1';
+            }, 50);
+            
+        }, 300); // Tempo para a animação de fade out
+        
+        console.log('Auth screen mostrada');
+    }
 }
 
 // Configurar botão de logout
@@ -136,6 +147,20 @@ function setupLogout() {
 // Inicialização da aplicação
 function initApp() {
     console.log('App inicializado');
+    
+    // Configurar estado inicial de opacidade
+    const authScreen = document.getElementById('authScreen');
+    const chatScreen = document.getElementById('chatScreen');
+    
+    if (authScreen) {
+        authScreen.style.opacity = '1';
+        authScreen.style.display = 'block';
+    }
+    
+    if (chatScreen) {
+        chatScreen.style.opacity = '0';
+        chatScreen.style.display = 'none';
+    }
     
     // Configurar abas de autenticação
     setupAuthTabs();
@@ -169,6 +194,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 // Exportar funções globais para outros módulos
 window.showChatScreen = showChatScreen;
 window.showAuthScreen = showAuthScreen;
+
 // ===== FUNÇÕES DA INTERFACE DO CHAT =====
 
 // Configurar abas do chat
@@ -180,7 +206,10 @@ function setupChatTabs() {
         tab.addEventListener('click', () => {
             // Remover active de todas as abas
             chatTabs.forEach(t => t.classList.remove('active'));
-            chatContents.forEach(c => c.style.display = 'none');
+            chatContents.forEach(c => {
+                c.style.display = 'none';
+                c.classList.remove('fade-in');
+            });
             
             // Adicionar active na aba clicada
             tab.classList.add('active');
@@ -190,7 +219,9 @@ function setupChatTabs() {
             const contentToShow = document.querySelector(`.${tabName}-content`);
             if (contentToShow) {
                 contentToShow.style.display = 'block';
-                contentToShow.classList.add('fade-in');
+                setTimeout(() => {
+                    contentToShow.classList.add('fade-in');
+                }, 50);
             }
         });
     });
@@ -267,6 +298,7 @@ function addMessage(text, type = 'ai', isTemp = false) {
     
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
+    messageDiv.style.opacity = '0';
     
     const time = new Date().toLocaleTimeString('pt-BR', { 
         hour: '2-digit', 
@@ -287,9 +319,10 @@ function addMessage(text, type = 'ai', isTemp = false) {
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     
-    // Animação de entrada
+    // Animação de entrada suave
     setTimeout(() => {
-        messageDiv.classList.add('fade-in');
+        messageDiv.style.opacity = '1';
+        messageDiv.style.transition = 'opacity 0.3s ease-in-out';
     }, 10);
     
     return isTemp ? messageDiv : null;
@@ -299,14 +332,17 @@ function addMessage(text, type = 'ai', isTemp = false) {
 async function loadChatHistory() {
     try {
         const history = await window.getEdenAIHistory();
-        if (history.success && history.data) {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = ''; // Limpar mensagens atuais
-            
-            // Adicionar mensagem de boas-vindas
-            addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
-            
-            // Adicionar histórico (se houver)
+        const chatMessages = document.getElementById('chatMessages');
+        
+        if (!chatMessages) return;
+        
+        chatMessages.innerHTML = ''; // Limpar mensagens atuais
+        
+        // Adicionar mensagem de boas-vindas
+        addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
+        
+        // Adicionar histórico (se houver)
+        if (history.success && history.data && history.data.length > 0) {
             history.data.forEach(interaction => {
                 addMessage(interaction.question, 'user');
                 if (interaction.ai_responses && interaction.ai_responses[0]) {
@@ -316,7 +352,10 @@ async function loadChatHistory() {
         }
     } catch (error) {
         console.error('Erro ao carregar histórico:', error);
-        addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages) {
+            addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
+        }
     }
 }
 
@@ -340,10 +379,4 @@ function initChat() {
     setupQuestionInput();
     setupSuggestedTopics();
     loadChatHistory();
-    
-    // Animação de entrada da tela de chat
-    const chatScreen = document.getElementById('chatScreen');
-    if (chatScreen) {
-        chatScreen.classList.add('fade-in');
-    }
 }
