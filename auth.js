@@ -118,3 +118,13 @@ export async function updatePassword(newPassword) {
     return { success: false, error: error.message }
   }
 }
+
+// ... (o resto do seu auth.js) ...
+
+// ===== EXPORTAÇÃO PARA ESCOPO GLOBAL =====
+// Necessário para o app.js acessar estas funções
+window.signUp = signUp;
+window.signIn = signIn;
+window.signOut = signOut;
+window.getAuthState = getAuthState;
+window.getCurrentUser = getCurrentUser;

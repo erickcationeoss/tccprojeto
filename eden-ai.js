@@ -358,3 +358,9 @@ export default {
   getEdenAIHistory,
   getEdenAISuggestions
 };
+
+// ... (o resto do seu eden-ai.js) ...
+
+// ===== EXPORTAÇÃO PARA ESCOPO GLOBAL =====
+window.askEdenAI = askEdenAI;
+window.getEdenAIHistory = getEdenAIHistory;
