@@ -564,3 +564,44 @@ body {
         font-size: 0.9rem;
     }
 }
+/* Animação de digitação */
+@keyframes typing {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    animation: typing 0.3s ease-out;
+}
+
+/* Efeito de fade para as abas */
+.chat-content > div {
+    display: none;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.chat-content > div:first-child {
+    display: block;
+}
+
+/* Melhorias no textarea */
+.luxury-textarea {
+    transition: all 0.3s ease;
+    min-height: 60px;
+    max-height: 150px;
+}
+
+.luxury-textarea:focus {
+    border-color: var(--gold-accent);
+}
+
+/* Efeito hover nos tópicos */
+.topic-item {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.topic-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 140, 66, 0.1) !important;
+}

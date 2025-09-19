@@ -145,3 +145,191 @@ document.addEventListener('DOMContentLoaded', initApp);
 // Exportar funções globais para outros módulos
 window.showChatScreen = showChatScreen;
 window.showAuthScreen = showAuthScreen;
+// ===== FUNÇÕES DA INTERFACE DO CHAT =====
+
+// Configurar abas do chat
+function setupChatTabs() {
+    const chatTabs = document.querySelectorAll('.tab');
+    const chatContents = document.querySelectorAll('.chat-content > div');
+    
+    chatTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remover active de todas as abas
+            chatTabs.forEach(t => t.classList.remove('active'));
+            chatContents.forEach(c => c.style.display = 'none');
+            
+            // Adicionar active na aba clicada
+            tab.classList.add('active');
+            
+            // Mostrar conteúdo correspondente
+            const tabName = tab.getAttribute('data-tab');
+            const contentToShow = document.querySelector(`.${tabName}-content`);
+            if (contentToShow) {
+                contentToShow.style.display = 'block';
+                contentToShow.classList.add('fade-in');
+            }
+        });
+    });
+}
+
+// Configurar área de input de perguntas
+function setupQuestionInput() {
+    const questionInput = document.getElementById('questionInput');
+    const sendBtn = document.querySelector('.send-btn');
+    
+    if (questionInput && sendBtn) {
+        // Auto-ajustar altura do textarea
+        questionInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        
+        // Enviar pergunta ao clicar no botão
+        sendBtn.addEventListener('click', sendQuestion);
+        
+        // Enviar pergunta ao pressionar Enter
+        questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+    }
+}
+
+// Função para enviar pergunta à IA
+async function sendQuestion() {
+    const questionInput = document.getElementById('questionInput');
+    const question = questionInput.value.trim();
+    
+    if (!question) return;
+    
+    try {
+        // Limpar input e ajustar altura
+        questionInput.value = '';
+        questionInput.style.height = 'auto';
+        
+        // Adicionar mensagem do usuário no chat
+        addMessage(question, 'user');
+        
+        // Mostrar indicador de carregamento
+        const loadingMsg = addMessage('Pensando...', 'ai', true);
+        
+        // Chamar a IA
+        const response = await window.askEdenAI(question);
+        
+        // Remover mensagem de carregamento
+        if (loadingMsg) {
+            loadingMsg.remove();
+        }
+        
+        // Adicionar resposta da IA
+        if (response.success) {
+            addMessage(response.data, 'ai');
+        } else {
+            addMessage('Erro: ' + response.error, 'ai');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao enviar pergunta:', error);
+        addMessage('Desculpe, ocorreu um erro. Tente novamente.', 'ai');
+    }
+}
+
+// Adicionar mensagem no chat
+function addMessage(text, type = 'ai', isTemp = false) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return null;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    
+    const time = new Date().toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    messageDiv.innerHTML = `
+        <div class="message-content">
+            <p>${text}</p>
+        </div>
+        <span class="message-time">${time}</span>
+    `;
+    
+    if (isTemp) {
+        messageDiv.id = 'temp-loading-msg';
+    }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Animação de entrada
+    setTimeout(() => {
+        messageDiv.classList.add('fade-in');
+    }, 10);
+    
+    return isTemp ? messageDiv : null;
+}
+
+// Carregar histórico de mensagens
+async function loadChatHistory() {
+    try {
+        const history = await window.getEdenAIHistory();
+        if (history.success && history.data) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = ''; // Limpar mensagens atuais
+            
+            // Adicionar mensagem de boas-vindas
+            addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
+            
+            // Adicionar histórico (se houver)
+            history.data.forEach(interaction => {
+                addMessage(interaction.question, 'user');
+                if (interaction.ai_responses && interaction.ai_responses[0]) {
+                    addMessage(interaction.ai_responses[0].response, 'ai');
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+        addMessage('Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje?', 'ai');
+    }
+}
+
+// Configurar tópicos sugeridos
+function setupSuggestedTopics() {
+    const topicItems = document.querySelectorAll('.topic-item');
+    topicItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const topic = item.textContent;
+            document.getElementById('questionInput').value = topic;
+            document.getElementById('questionInput').focus();
+        });
+    });
+}
+
+// ===== INICIALIZAÇÃO DO CHAT =====
+function initChat() {
+    console.log('Inicializando chat...');
+    
+    setupChatTabs();
+    setupQuestionInput();
+    setupSuggestedTopics();
+    loadChatHistory();
+    
+    // Animação de entrada da tela de chat
+    const chatScreen = document.getElementById('chatScreen');
+    if (chatScreen) {
+        chatScreen.classList.add('fade-in');
+    }
+}
+
+// ===== ATUALIZE A FUNÇÃO showChatScreen =====
+function showChatScreen() {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('chatScreen').style.display = 'block';
+    console.log('Chat screen mostrada');
+    
+    // Inicializar funcionalidades do chat
+    initChat();
+}
