@@ -7,31 +7,23 @@
     <title>EduAI - Assistente de Estudos</title>
     <link rel="stylesheet" href="main.css">
     
-    <!-- Fontes primeiro -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
-    
-    <!-- Configurações ENV -->
+    <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
     <script>
         window.ENV = {
             VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
             VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
-            VITE_EDEN_AI_API_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZTNjNGNjZGUtNjE5YS00OWI5LTg4NWUtNTdmZGE5YzViNzFjIiwidHlwZSI6ImFwaV90b2tlbiJ9.RNVXFPhNnq3ADj9knGTuyVPjdFIzCUkRpyVsVJSZMuM"
+            VITE_EDEN_AI_API_KEY: "https://api.edenai.run/v2/aiproducts/askyoda/v2/{project_id}/add_url"
         }
     </script>
-    
-    <!-- Scripts externos -->
+
+    <!-- ✅ DEPOIS OS CDNs -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
-    
-    <!-- REMOVA o YodaBot se não for usar widget -->
-     <script src="https://cdn.jsdelivr.net/gh/edenai/yodabot@e4f753f/embed.js?project={project_id}&provider=openai&model=gpt-4"></script>
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
-    
-    <!-- Seus scripts modules -->
+
+    <!-- ✅ POR FIM SEUS MODULES -->
     <script type="module" src="auth.js"></script>
     <script type="module" src="eden-ai.js"></script>
     <script type="module" src="app.js"></script>
-</head>
 </head>
 <body>
     <div class="luxury-background">
@@ -59,7 +51,24 @@
                 <form class="auth-form active" id="loginForm">
                     <div class="form-group">
                         <input type="email" id="loginEmail" required class="luxury-input">
-                        <label for="loginEmail" class="luxury-label">Email</label>
+                        <label for="loginEmail" cl    
+    <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
+    <script>
+        window.ENV = {
+            VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
+            VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
+            VITE_EDEN_AI_API_KEY: "SUA_CHAVE_EDEN_AI_AQUI"
+        }
+    </script>
+
+    <!-- ✅ DEPOIS OS CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
+
+    <!-- ✅ POR FIM SEUS MODULES -->
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="eden-ai.js"></script>
+    <script type="module" src="app.js"></script>
                     </div>
                     <div class="form-group">
                         <input type="password" id="loginPassword" required class="luxury-input">
@@ -92,7 +101,24 @@
                         <h2 class="chat-title">Edu<span class="accent">AI</span></h2>
                         <p class="chat-subtitle">Assistente pessoal de estudos</p>
                     </div>
-                    <div class="header-right">
+                    <div class="header-right">    
+    <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
+    <script>
+        window.ENV = {
+            VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
+            VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
+            VITE_EDEN_AI_API_KEY: "SUA_CHAVE_EDEN_AI_AQUI"
+        }
+    </script>
+
+    <!-- ✅ DEPOIS OS CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
+
+    <!-- ✅ POR FIM SEUS MODULES -->
+    <script type="module" src="auth.js"></script>
+    <script type="module" src="eden-ai.js"></script>
+    <script type="module" src="app.js"></script>
                         <button class="logout-btn">Sair</button>
                     </div>
                 </div>
