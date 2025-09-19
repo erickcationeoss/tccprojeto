@@ -80,56 +80,39 @@ function setupAuthForms() {
     }
 }
 
-// FUNÇÃO SHOWCHATSCREEN CORRIGIDA
+// FUNÇÃO SHOWCHATSCREEN - VERSÃO SIMPLIFICADA E FUNCIONAL
 function showChatScreen() {
     const authScreen = document.getElementById('authScreen');
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Esconder auth screen com animação
-        authScreen.style.opacity = '0';
-        setTimeout(() => {
-            authScreen.style.display = 'none';
-            
-            // Mostrar chat screen com animação
-            chatScreen.style.display = 'block';
-            setTimeout(() => {
-                chatScreen.style.opacity = '1';
-            }, 50);
-            
-        }, 300); // Tempo para a animação de fade out
+        // Remover animações complexas - usar apenas display
+        authScreen.style.display = 'none';
+        chatScreen.style.display = 'block';
         
         console.log('Chat screen mostrada');
         
-        // Inicializar funcionalidades do chat
-        initChat();
+        // Inicializar chat DEPOIS de mostrar
+        setTimeout(() => {
+            initChat();
+        }, 100);
     }
 }
 
-// FUNÇÃO SHOWAUTHSCREEN CORRIGIDA
 function showAuthScreen() {
     const authScreen = document.getElementById('authScreen');
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Esconder chat screen com animação
-        chatScreen.style.opacity = '0';
-        setTimeout(() => {
-            chatScreen.style.display = 'none';
-            
-            // Mostrar auth screen com animação
-            authScreen.style.display = 'block';
-            setTimeout(() => {
-                authScreen.style.opacity = '1';
-            }, 50);
-            
-        }, 300); // Tempo para a animação de fade out
+        // Simples e direto - sem animações complexas
+        chatScreen.style.display = 'none';
+        authScreen.style.display = 'block';
         
         console.log('Auth screen mostrada');
     }
 }
 
-// Configurar botão de logout
+
 function setupLogout() {
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
