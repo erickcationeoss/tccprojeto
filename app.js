@@ -87,6 +87,11 @@ function setupAuthForms() {
     }
 }
 
+function showChatScreen() {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('chatScreen').style.display = 'block';
+    console.log('Chat screen mostrada');
+    
     // Inicializar funcionalidades do chat
     initChat();
     
@@ -96,6 +101,7 @@ function setupAuthForms() {
         document.getElementById('chatScreen').offsetHeight; // force reflow
         document.getElementById('chatScreen').style.opacity = '1';
     }, 50);
+}
 
 // Função para voltar para auth
 function showAuthScreen() {
@@ -332,14 +338,4 @@ function initChat() {
     if (chatScreen) {
         chatScreen.classList.add('fade-in');
     }
-}
-
-// ===== ATUALIZE A FUNÇÃO showChatScreen =====
-function showChatScreen() {
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('chatScreen').style.display = 'block';
-    console.log('Chat screen mostrada');
-    
-    // Inicializar funcionalidades do chat
-    initChat();
 }
