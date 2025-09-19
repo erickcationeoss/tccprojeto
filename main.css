@@ -608,3 +608,26 @@ body {
     transform: translateX(5px);
     background: rgba(255, 140, 66, 0.1) !important;
 }
+
+.chat-container {
+display: flex !important; /* Força flex */
+flex-direction: column;
+height: 85vh !important; /* Força altura */
+width: 100% !important;
+}
+
+.hidden {
+display: none !important;
+}
+
+.chat-container {
+opacity: 0;
+transform: translateY(20px);
+transition: all 0.5s ease;
+}
+
+.chat-container.active {
+opacity: 1;
+transform: translateY(0);
+}
+
