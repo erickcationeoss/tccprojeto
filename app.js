@@ -80,38 +80,71 @@ function setupAuthForms() {
     }
 }
 
-
+// FUNÇÃO SHOWCHATSCREEN CORRIGIDA (usando apenas classes CSS)
 function showChatScreen() {
     const authScreen = document.getElementById('authScreen');
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Remover classe hidden da auth
-        authScreen.classList.remove('hidden');
+        console.log('Mostrando chat screen...');
         
-        // Adicionar classe active na chat
-        chatScreen.classList.add('active');
+        // 1. Primeiro esconder a tela de auth
+        authScreen.classList.add('hidden');
         
-        console.log('Chat screen mostrada');
-        initChat();
+        // 2. Esperar a transição terminar antes de mostrar o chat
+        setTimeout(() => {
+            chatScreen.classList.add('active');
+            
+            // 3. Inicializar o chat DEPOIS que estiver visível
+            setTimeout(() => {
+                initChat();
+                console.log('Chat inicializado');
+            }, 100);
+            
+        }, 300); // Tempo da transição CSS (0.5s = 500ms)
     }
 }
 
+// FUNÇÃO SHOWAUTHSCREEN CORRIGIDA
 function showAuthScreen() {
     const authScreen = document.getElementById('authScreen');
     const chatScreen = document.getElementById('chatScreen');
     
     if (authScreen && chatScreen) {
-        // Remover classe active da chat
+        console.log('Mostrando auth screen...');
+        
+        // 1. Esconder chat screen
         chatScreen.classList.remove('active');
         
-        // Remover classe hidden da auth
-        authScreen.classList.remove('hidden');
-        
-        console.log('Auth screen mostrada');
+        // 2. Esperar transição terminar antes de mostrar auth
+        setTimeout(() => {
+            authScreen.classList.remove('hidden');
+        }, 300);
     }
 }
 
+// INICIALIZAÇÃO CORRIGIDA
+function initApp() {
+    console.log('App inicializado');
+    
+    // Configurar estado inicial CORRETO
+    const authScreen = document.getElementById('authScreen');
+    const chatScreen = document.getElementById('chatScreen');
+    
+    if (authScreen) {
+        authScreen.classList.remove('hidden'); // Garantir que auth está visível
+    }
+    
+    if (chatScreen) {
+        chatScreen.classList.remove('active'); // Garantir que chat está escondido
+    }
+    
+    // Resto da inicialização...
+    setupAuthTabs();
+    setupAuthForms();
+    setupLogout();
+    checkAuthState();
+}
 
 function setupLogout() {
     const logoutBtn = document.querySelector('.logout-btn');
