@@ -1,364 +1,178 @@
-// app.js - Lógica principal da aplicação
-console.log('Aplicação iniciada!');
+// app.js - Controla toda a interface de usuário e a lógica de interação.
 
 // =========================================
-// REFERÊNCIAS DE ELEMENTOS DO DOM
+// VARIÁVEIS GLOBAIS E ELEMENTOS DA UI
 // =========================================
 const authScreen = document.getElementById('authScreen');
 const chatScreen = document.getElementById('chatScreen');
+
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
-const authBtns = document.querySelectorAll('.auth-switcher .auth-btn');
-const messageBox = document.getElementById('messageBox');
-const messageText = document.getElementById('messageText');
+const authBtns = document.querySelectorAll('.auth-btn');
+
 const logoutBtn = document.querySelector('.logout-btn');
+const chatMessages = document.getElementById('chatMessages');
 const questionInput = document.getElementById('questionInput');
 const sendBtn = document.querySelector('.send-btn');
-const chatMessages = document.getElementById('chatMessages');
 const chatTabs = document.querySelectorAll('.chat-tabs .tab');
-const topicItems = document.querySelectorAll('.topic-item');
 
-let currentUser = null;
+// Função para mostrar mensagens de feedback temporárias
+function showMessage(text, type = 'info') {
+    const messageBox = document.createElement('div');
+    messageBox.className = `message-box ${type}`;
+    messageBox.innerText = text;
+    document.body.appendChild(messageBox);
+    messageBox.style.display = 'block';
 
-// =========================================
-// FUNÇÕES DE UTILIDADE
-// =========================================
-
-/**
- * Exibe uma mensagem de feedback para o usuário.
- * @param {string} message - A mensagem a ser exibida.
- * @param {string} type - O tipo da mensagem ('info' ou 'error').
- */
-function showMessage(message, type = 'info') {
-    if (messageBox && messageText) {
-        messageText.textContent = message;
-        messageBox.className = `message-box ${type}`;
-        messageBox.style.display = 'block';
-        
-        setTimeout(() => {
-            messageBox.style.display = 'none';
-        }, 5000); // Esconde a mensagem após 5 segundos
-    }
+    setTimeout(() => {
+        messageBox.style.opacity = '0';
+        messageBox.addEventListener('transitionend', () => {
+            messageBox.remove();
+        });
+    }, 3000);
 }
 
-/**
- * Adiciona uma mensagem ao chat.
- * @param {string} text - O texto da mensagem.
- * @param {string} type - O tipo de mensagem ('user' ou 'ai').
- * @param {boolean} isTemp - Se a mensagem é temporária (ex: carregamento).
- */
-function addMessage(text, type = 'ai', isTemp = false) {
-    if (!chatMessages) return null;
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${type}`;
-    messageDiv.style.opacity = '0';
-    
-    const time = new Date().toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    
-    messageDiv.innerHTML = `
+// Função para alternar a visibilidade das telas
+function showScreen(screen) {
+    authScreen.classList.remove('visible');
+    chatScreen.classList.remove('visible');
+    authScreen.classList.add('hidden');
+    chatScreen.classList.add('hidden');
+    screen.classList.remove('hidden');
+    screen.classList.add('visible');
+}
+
+// Função para exibir uma mensagem no chat
+function displayMessage(text, sender) {
+    const messageEl = document.createElement('div');
+    messageEl.className = `message ${sender}`;
+    messageEl.innerHTML = `
         <div class="message-content">
             <p>${text}</p>
         </div>
-        <span class="message-time">${time}</span>
+        <span class="message-time">${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
     `;
-    
-    if (isTemp) {
-        messageDiv.id = 'temp-loading-msg';
-    }
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    setTimeout(() => {
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transition = 'opacity 0.3s ease-in-out';
-    }, 10);
-    
-    return isTemp ? messageDiv : null;
+    chatMessages.appendChild(messageEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight; // Rolar para a última mensagem
 }
-
-// =========================================
-// FUNÇÕES DE CONTROLE DE TELA
-// =========================================
-
-/**
- * Alterna entre a tela de autenticação e a de chat com transição.
- * @param {string} screenName - O nome da tela ('auth' ou 'chat').
- */
-function showScreen(screenName) {
-    if (screenName === 'auth') {
-        if (chatScreen) {
-            chatScreen.classList.remove('visible');
-            chatScreen.classList.add('hidden');
-        }
-        if (authScreen) {
-            // Pequeno delay para garantir que a transição de ocultar seja processada
-            setTimeout(() => {
-                authScreen.classList.remove('hidden');
-                authScreen.classList.add('visible');
-            }, 500); // tempo de 500ms é o da sua transição no CSS
-        }
-    } else if (screenName === 'chat') {
-        if (authScreen) {
-            authScreen.classList.remove('visible');
-            authScreen.classList.add('hidden');
-        }
-        if (chatScreen) {
-            // Pequeno delay para garantir que a transição de ocultar seja processada
-            setTimeout(() => {
-                chatScreen.classList.remove('hidden');
-                chatScreen.classList.add('visible');
-                initChat();
-            }, 500); // tempo de 500ms é o da sua transição no CSS
-        }
-    }
-}
-
 
 // =========================================
 // LÓGICA DE AUTENTICAÇÃO
 // =========================================
 
-/**
- * Configura os listeners dos formulários de login e cadastro.
- */
-function setupAuthForms() {
-    // Formulário de login
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            try {
-                const result = await window.signIn(email, password);
-                if (result.success) {
-                    showScreen('chat');
-                } else {
-                    showMessage('Erro no login: ' + result.error, 'error');
-                }
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-            }
-        });
+// Ouve mudanças no estado de autenticação (login/logout)
+window.onAuthStateChange((event, session) => {
+    if (session) {
+        // Usuário logado
+        showScreen(chatScreen);
+        console.log('Usuário logado:', session.user);
+    } else {
+        // Usuário deslogado
+        showScreen(authScreen);
+        console.log('Usuário deslogado');
     }
+});
 
-    // Formulário de cadastro
-    if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const fullName = document.getElementById('fullName').value;
-            
-            try {
-                const result = await window.signUp(email, password, { fullName });
-                if (result.success) {
-                    showMessage('Cadastro realizado! Verifique seu email para confirmar.', 'info');
-                    // Alternar para login após cadastro
-                    document.querySelector('[data-tab="login"]').click();
-                } else {
-                    showMessage('Erro no cadastro: ' + result.error, 'error');
-                }
-            } catch (error) {
-                showMessage('Erro: ' + error.message, 'error');
-            }
-        });
-    }
-}
+// Lógica para alternar entre login e cadastro
+authBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        authBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-/**
- * Configura o botão de logout.
- */
-function setupLogout() {
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await window.signOut();
-                showScreen('auth');
-            } catch (error) {
-                showMessage('Erro ao sair: ' + error.message, 'error');
-            }
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.auth-form').forEach(form => {
+            form.classList.remove('active');
         });
-    }
-}
+        document.getElementById(`${tab}Form`).classList.add('active');
+    });
+});
 
-/**
- * Verifica o estado de autenticação do usuário ao carregar a página.
- */
-async function checkAuthState() {
-    try {
-        const { data } = await window.getAuthState();
-        if (data && data.session) {
-            currentUser = data.session.user;
-            showScreen('chat');
-        } else {
-            showScreen('auth');
-        }
-    } catch (error) {
-        console.log('Nenhum usuário autenticado. Exibindo tela de login.');
-        showScreen('auth');
+// Lida com o formulário de login
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    const result = await window.signIn(email, password);
+    if (result.success) {
+        showMessage('Login realizado com sucesso!', 'info');
+    } else {
+        showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
     }
-}
+});
+
+// Lida com o formulário de cadastro
+signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const fullName = document.getElementById('fullName').value;
+
+    const result = await window.signUp(email, password, { fullName });
+    if (result.success) {
+        showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
+    } else {
+        showMessage(`Erro ao criar conta: ${result.error}`, 'error');
+    }
+});
+
+// Lida com o botão de logout
+logoutBtn.addEventListener('click', async () => {
+    const result = await window.signOut();
+    if (result.success) {
+        showMessage('Você saiu da sua conta.', 'info');
+    } else {
+        showMessage('Erro ao sair da conta.', 'error');
+    }
+});
 
 // =========================================
 // LÓGICA DO CHAT
 // =========================================
 
-/**
- * Configura as abas do chat.
- */
-function setupChatTabs() {
-    chatTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            chatTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // Lógica para mostrar/esconder o conteúdo das abas
-            const contentToShow = document.querySelector(`.chat-content .${tab.dataset.tab}-content`);
-            const allContents = document.querySelectorAll('.chat-content > div:not(.sidebar)');
-            allContents.forEach(content => {
-                content.style.display = 'none';
-            });
-            if (contentToShow) {
-                contentToShow.style.display = 'flex';
-            }
-        });
-    });
-}
-
-/**
- * Configura a área de input de perguntas e o botão de envio.
- */
-function setupQuestionInput() {
-    if (questionInput && sendBtn) {
-        questionInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-        });
-        
-        sendBtn.addEventListener('click', sendQuestion);
-        
-        questionInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendQuestion();
-            }
-        });
-    }
-}
-
-/**
- * Envia a pergunta para a IA e gerencia a resposta.
- */
-async function sendQuestion() {
+// Lida com o envio de perguntas ao pressionar o botão ou a tecla Enter
+async function handleSendMessage() {
     const question = questionInput.value.trim();
-    
     if (!question) return;
-    
+
+    // Adiciona a mensagem do usuário ao chat
+    displayMessage(question, 'user');
+    questionInput.value = '';
+
+    // Mostra um estado de "digitando" da IA
+    displayMessage('...', 'ai');
+    const tempAiMessage = chatMessages.lastElementChild;
+
     try {
-        questionInput.value = '';
-        questionInput.style.height = 'auto';
-        
-        addMessage(question, 'user');
-        
-        const loadingMsg = addMessage('Pensando...', 'ai', true);
-        
         const response = await window.askEdenAI(question);
-        
-        if (loadingMsg) {
-            loadingMsg.remove();
-        }
-        
         if (response.success) {
-            addMessage(response.data, 'ai');
+            tempAiMessage.querySelector('p').innerText = response.data;
         } else {
-            addMessage('Erro: ' + response.error, 'ai');
+            tempAiMessage.querySelector('p').innerText = `Erro: ${response.error}`;
+            tempAiMessage.classList.add('error');
         }
-        
     } catch (error) {
-        console.error('Erro ao enviar pergunta:', error);
-        addMessage('Desculpe, ocorreu um erro. Tente novamente.', 'ai');
+        tempAiMessage.querySelector('p').innerText = 'Houve um erro de comunicação.';
+        tempAiMessage.classList.add('error');
     }
 }
 
-/**
- * Carrega o histórico de mensagens do Supabase.
- */
-async function loadChatHistory() {
-    try {
-        const history = await window.getEdenAIHistory();
-        if (!chatMessages) return;
-        
-        chatMessages.innerHTML = ''; 
-        
-        if (history.success && history.data && history.data.length > 0) {
-            history.data.forEach(interaction => {
-                addMessage(interaction.question, 'user');
-                if (interaction.ai_responses && interaction.ai_responses[0]) {
-                    addMessage(interaction.ai_responses[0].response, 'ai');
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao carregar histórico:', error);
+sendBtn.addEventListener('click', handleSendMessage);
+questionInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
     }
-}
+});
 
-/**
- * Configura os tópicos sugeridos para o chat.
- */
-function setupSuggestedTopics() {
-    topicItems.forEach(item => {
-        item.addEventListener('click', () => {
-            const topic = item.textContent;
-            if (questionInput) {
-                questionInput.value = topic;
-                questionInput.focus();
-            }
-        });
+// Lógica para alternar entre as abas do chat
+chatTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        chatTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        // Futuramente, aqui você pode adicionar a lógica para mostrar o conteúdo de "Histórico" ou "Sugestões"
     });
-}
+});
 
-/**
- * Inicializa as funcionalidades da tela de chat.
- */
-function initChat() {
-    console.log('Inicializando chat...');
-    setupChatTabs();
-    setupQuestionInput();
-    setupSuggestedTopics();
-    loadChatHistory();
-}
-
-// =========================================
-// INICIALIZAÇÃO DA APLICAÇÃO
-// =========================================
-
-/**
- * Inicializa a aplicação ao carregar o DOM.
- */
-function initApp() {
-    console.log('App inicializado');
-    
-    // Setup das abas de autenticação
-    authBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            authBtns.forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(`${btn.dataset.tab}Form`).classList.add('active');
-        });
-    });
-    
-    setupAuthForms();
-    setupLogout(); 
-    checkAuthState();
-}
-
-// Iniciar a aplicação quando o DOM estiver completamente carregado
-document.addEventListener('DOMContentLoaded', initApp);
+// Inicialização da aplicação
+console.log('App inicializado');

@@ -1,495 +1,198 @@
+// main.js - Centraliza todas as funções de autenticação e da IA.
 
-//inicialização do supabase
-const supabaseUrl = window.ENV.VITE_SUPABASE_URL
-const supabaseAnonKey = window.ENV.VITE_SUPABASE_ANON_KEY
+// Importa a instância do cliente Supabase do arquivo supabase-client.js
+// A variável 'supabase' já é criada pelo script CDN no index.html.
+const supabaseClient = supabase.createClient(
+  window.ENV.VITE_SUPABASE_URL,
+  window.ENV.VITE_SUPABASE_ANON_KEY
+);
 
-// Inicializar cliente Supabase (agora usando a global window.supabase)
-export const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey)
-
-// ===== FUNÇÕES DE INICIALIZAÇÃO DO BANCO =====
-
-/**
- * Inicializa o banco de dados criando tabelas necessárias
- * Esta função deve ser chamada uma vez durante o setup da aplicação
- */
-export async function initializeDatabase() {
-  try {
-    console.log('Inicializando banco de dados...')
-    
-    // Verificar se as tabelas já existem
-    const tables = await checkExistingTables()
-    
-    // Criar tabelas se não existirem
-    if (!tables.includes('profiles')) {
-      await createProfilesTable()
-    }
-    
-    if (!tables.includes('user_questions')) {
-      await createUserQuestionsTable()
-    }
-    
-    if (!tables.includes('ai_responses')) {
-      await createAIResponsesTable()
-    }
-    
-    if (!tables.includes('user_interests')) {
-      await createUserInterestsTable()
-    }
-    
-    console.log('Banco de dados inicializado com sucesso!')
-    return { success: true }
-  } catch (error) {
-    console.error('Erro ao inicializar banco de dados:', error)
-    return { success: false, error: error.message }
-  }
-}
+// =========================================
+// FUNÇÕES DE AUTENTICAÇÃO
+// =========================================
 
 /**
- * Verifica quais tabelas já existem no banco
+ * Cadastra um novo usuário no Supabase.
+ * @param {string} email - Email do usuário.
+ * @param {string} password - Senha do usuário.
+ * @param {object} options - Opções adicionais (ex: fullName).
+ * @returns {Promise<object>} - Resultado da operação.
  */
-async function checkExistingTables() {
+async function signUp(email, password, options = {}) {
   try {
-    const { data, error } = await supabase
-      .from('pg_tables')
-      .select('tablename')
-      .eq('schemaname', 'public')
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: options.fullName || null
+        }
+      }
+    });
 
-    if (error) throw error
-    return data.map(table => table.tablename)
-  } catch (error) {
-    console.error('Erro ao verificar tabelas:', error)
-    return []
-  }
-}
-
-// ===== CRIAÇÃO DE TABELAS =====
-
-/**
- * Cria tabela de perfis de usuário
- */
-async function createProfilesTable() {
-  try {
-    // Esta tabela será criada via SQL no Supabase devido às constraints
-    console.log('Tabela profiles será criada via SQL')
-  } catch (error) {
-    console.error('Erro ao criar tabela profiles:', error)
-  }
-}
-
-/**
- * Cria tabela de perguntas dos usuários
- */
-async function createUserQuestionsTable() {
-  try {
-    const { error } = await supabase.rpc('create_user_questions_table')
-    if (error) throw error
-    console.log('Tabela user_questions criada com sucesso')
-  } catch (error) {
-    console.error('Erro ao criar tabela user_questions:', error)
-  }
-}
-
-/**
- * Cria tabela de respostas da IA
- */
-async function createAIResponsesTable() {
-  try {
-    const { error } = await supabase.rpc('create_ai_responses_table')
-    if (error) throw error
-    console.log('Tabela ai_responses criada com sucesso')
-  } catch (error) {
-    console.error('Erro ao criar tabela ai_responses:', error)
-  }
-}
-
-/**
- * Cria tabela de interesses dos usuários
- */
-async function createUserInterestsTable() {
-  try {
-    const { error } = await supabase.rpc('create_user_interests_table')
-    if (error) throw error
-    console.log('Tabela user_interests criada com sucesso')
-  } catch (error) {
-    console.error('Erro ao criar tabela user_interests:', error)
-  }
-}
-
-// ===== FUNÇÕES DE UTILIDADE =====
-
-/**
- * Obtém o perfil completo do usuário atual
- */
-export async function getCurrentUserProfile() {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
+    if (error) {
+      throw error;
     }
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
-
-    if (error) throw error
-
-    return { success: true, data }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro ao obter perfil:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no cadastro:', error);
+    return { success: false, error: error.message };
   }
 }
 
 /**
- * Atualiza o perfil do usuário
+ * Autentica um usuário existente.
+ * @param {string} email - Email do usuário.
+ * @param {string} password - Senha do usuário.
+ * @returns {Promise<object>} - Resultado da operação.
  */
-export async function updateUserProfile(updates) {
+async function signIn(email, password) {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
     }
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', user.id)
-      .select()
-
-    if (error) throw error
-
-    return { success: true, data }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro ao atualizar perfil:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no login:', error);
+    return { success: false, error: error.message };
   }
 }
 
 /**
- * Salva uma pergunta do usuário
+ * Realiza o logout do usuário.
+ * @returns {Promise<object>} - Resultado da operação.
  */
-export async function saveUserQuestion(question, category = null) {
+async function signOut() {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+      throw error;
     }
-
-    const { data, error } = await supabase
-      .from('user_questions')
-      .insert({
-        user_id: user.id,
-        question: question,
-        category: category,
-        created_at: new Date().toISOString()
-      })
-      .select()
-
-    if (error) throw error
-
-    return { success: true, data }
+    return { success: true };
   } catch (error) {
-    console.error('Erro ao salvar pergunta:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no logout:', error);
+    return { success: false, error: error.message };
   }
 }
 
 /**
- * Salva uma resposta da IA
+ * Obtém a sessão de autenticação atual.
+ * @returns {Promise<object>} - A sessão atual.
  */
-export async function saveAIResponse(questionId, response, provider) {
-  try {
-    const { data, error } = await supabase
-      .from('ai_responses')
-      .insert({
-        question_id: questionId,
-        response: response,
-        provider: provider,
-        created_at: new Date().toISOString()
-      })
-      .select()
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao salvar resposta da IA:', error)
-    return { success: false, error: error.message }
-  }
+async function getAuthState() {
+  return supabaseClient.auth.getSession();
 }
 
 /**
- * Obtém o histórico de interações do usuário
+ * Obtém o usuário atualmente autenticado.
+ * @returns {Promise<object>} - O usuário atual.
  */
-export async function getUserInteractionHistory(limit = 20) {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
+async function getCurrentUser() {
+  return supabaseClient.auth.getUser();
+}
+
+/**
+ * Ouve mudanças no estado de autenticação.
+ * @param {function} callback - Função a ser chamada em cada mudança.
+ * @returns {function} - Função para cancelar a subscrição.
+ */
+function onAuthStateChange(callback) {
+  return supabaseClient.auth.onAuthStateChange(callback);
+}
+
+// =========================================
+// FUNÇÕES DE COMUNICAÇÃO COM A IA
+// =========================================
+
+/**
+ * Envia uma pergunta para a API da EdenAI.
+ * @param {string} question - A pergunta a ser enviada.
+ * @returns {Promise<object>} - Resultado da chamada à API.
+ */
+async function askEdenAI(question) {
+    const apiKey = window.ENV.VITE_EDEN_AI_API_KEY;
+    const apiUrl = 'https://api.edenai.run/v2/text/generation';
     
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
+    try {
+        const response = await axios.post(apiUrl, {
+            providers: 'openai', // Você pode trocar o provedor se tiver outras chaves
+            text: question,
+            temperature: 0.2,
+            max_tokens: 500,
+        }, {
+            headers: {
+                Authorization: `Bearer ${apiKey}`
+            }
+        });
+        
+        const generatedText = response.data.openai.generated_text;
+        
+        // Salva a interação no Supabase
+        const { error: dbError } = await supabaseClient
+            .from('interactions')
+            .insert({
+                user_id: (await getCurrentUser()).data.user.id,
+                question: question,
+                ai_responses: [{ response: generatedText }]
+            });
+            
+        if (dbError) {
+            console.error('Erro ao salvar interação:', dbError);
+        }
+        
+        return { success: true, data: generatedText };
+        
+    } catch (error) {
+        console.error('Erro na chamada da API EdenAI:', error);
+        return { success: false, error: error.response?.data?.error || error.message };
     }
-
-    const { data, error } = await supabase
-      .from('user_questions')
-      .select(`
-        id,
-        question,
-        category,
-        created_at,
-        ai_responses (
-          response,
-          provider,
-          created_at
-        )
-      `)
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(limit)
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao obter histórico:', error)
-    return { success: false, error: error.message }
-  }
 }
 
 /**
- * Adiciona interesses do usuário
+ * Obtém o histórico de interações do Supabase.
+ * @returns {Promise<object>} - O histórico de interações do usuário.
  */
-export async function addUserInterests(interests) {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
+async function getEdenAIHistory() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('interactions')
+            .select('question, ai_responses')
+            .eq('user_id', (await getCurrentUser()).data.user.id)
+            .order('created_at', { ascending: true });
+        
+        if (error) {
+            throw error;
+        }
+        
+        return { success: true, data };
+        
+    } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+        return { success: false, error: error.message };
     }
-
-    // Converter array de interesses em objetos para inserção
-    const interestsData = interests.map(interest => ({
-      user_id: user.id,
-      interest: interest,
-      created_at: new Date().toISOString()
-    }))
-
-    const { data, error } = await supabase
-      .from('user_interests')
-      .insert(interestsData)
-      .select()
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao adicionar interesses:', error)
-    return { success: false, error: error.message }
-  }
 }
 
-/**
- * Obtém interesses do usuário
- */
-export async function getUserInterests() {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
-    }
+// =========================================
+// EXPOSIÇÃO DE FUNÇÕES GLOBAIS
+// =========================================
 
-    const { data, error } = await supabase
-      .from('user_interests')
-      .select('interest, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao obter interesses:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-/**
- * Busca usuários por interesses similares
- */
-export async function findUsersWithSimilarInterests() {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
-    }
-
-    const { data, error } = await supabase
-      .rpc('find_similar_interests', { current_user_id: user.id })
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao buscar usuários similares:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-/**
- * Estatísticas do usuário
- */
-export async function getUserStats() {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
-    }
-
-    const { data, error } = await supabase
-      .rpc('get_user_stats', { user_id: user.id })
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao obter estatísticas:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// ===== FUNÇÕES DE GERENCIAMENTO DE ARQUIVOS =====
-
-/**
- * Faz upload de avatar do usuário
- */
-export async function uploadUserAvatar(file) {
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (!user) {
-      return { success: false, error: 'Usuário não autenticado' }
-    }
-
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${user.id}-${Math.random()}.${fileExt}`
-    const filePath = `avatars/${fileName}`
-
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file)
-
-    if (uploadError) throw uploadError
-
-    // Obter URL pública
-    const { data: { publicUrl } } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath)
-
-    // Atualizar perfil com URL do avatar
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ avatar_url: publicUrl })
-      .eq('id', user.id)
-
-    if (updateError) throw updateError
-
-    return { success: true, url: publicUrl }
-  } catch (error) {
-    console.error('Erro ao fazer upload de avatar:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// ===== LISTENERS E REALTIME =====
-
-/**
- * Inscreve-se para atualizações em tempo real
- */
-export function subscribeToRealtime(table, event, callback) {
-  return supabase
-    .channel('custom-channels')
-    .on(
-      'postgres_changes',
-      {
-        event: event,
-        schema: 'public',
-        table: table
-      },
-      callback
-    )
-    .subscribe()
-}
-
-/**
- * Cancela todas as inscrições
- */
-export function unsubscribeAll() {
-  supabase.removeAllChannels()
-}
-
-// ===== TRATAMENTO DE ERROS =====
-
-/**
- * Tratador global de erros do Supabase
- */
-export function setupErrorHandling() {
-  // Listener global de erros de autenticação
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT') {
-      console.log('Usuário deslogado')
-    }
-    
-    if (event === 'TOKEN_REFRESHED') {
-      console.log('Token atualizado')
-    }
-  })
-}
-
-// ===== EXPORTAÇÕES PRINCIPAIS =====
-
-export default {
-  supabase,
-  initializeDatabase,
-  getCurrentUserProfile,
-  updateUserProfile,
-  saveUserQuestion,
-  saveAIResponse,
-  getUserInteractionHistory,
-  addUserInterests,
-  getUserInterests,
-  findUsersWithSimilarInterests,
-  getUserStats,
-  uploadUserAvatar,
-  subscribeToRealtime,
-  unsubscribeAll,
-  setupErrorHandling
-}
-
-// global.js - Exporta funções para o escopo global do window
-import { signUp, signIn, signOut, getAuthState, getCurrentUser } from './auth.js';
-import { askEdenAI, getEdenAIHistory } from './eden-ai.js';
-
-
-// Anexa as funções importadas ao objeto 'window'
-window.signUp = signUp;
 window.signIn = signIn;
+window.signUp = signUp;
 window.signOut = signOut;
 window.getAuthState = getAuthState;
-window.getCurrentUser = getCurrentUser;
 window.askEdenAI = askEdenAI;
 window.getEdenAIHistory = getEdenAIHistory;
 
-console.log("global.js carregado. Aplicação pronta para iniciar!");
+console.log('main.js carregado. Funções globais expostas.');
+
+// auth,js - parte da autenticação
 
 // auth.js - Funções de autenticação e gerenciamento de usuário
 // Importa a instância do cliente Supabase do arquivo supabase-client.js
@@ -601,7 +304,7 @@ export async function updatePassword(newPassword) {
   }
 }
 
-// eden-ai - programação da I.A
+//eden-ai.js - programação da IA
 
 // eden-ai.js - Integração com a API da Eden AI
 // Nota: Para este projeto, a chave e URL são fixas, pois é um projeto de TCC
