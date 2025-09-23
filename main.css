@@ -1,131 +1,193 @@
-/* style.css - Estilos básicos para a aplicação */
+/*
+    main.css - Estilos para o tema "luxury" do EduAI
+    Foco: Centralização, proporção, fonte serifada e animações sutis
+*/
 
-/* ========================================= */
-/* ESTILOS GLOBAIS             */
-/* ========================================= */
+/* ============================== */
+/* GLOBAIS E TIPOGRAFIA           */
+/* ============================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: 'Playfair Display', serif;
     margin: 0;
     padding: 0;
+    background-color: #121212;
+    color: #f0f0f0;
+    line-height: 1.6;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    overflow: hidden; /* Evita barras de rolagem */
+    position: relative;
 }
+
+.luxury-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #1a1a1a 0%, #0d0d0d 100%);
+    z-index: -2;
+}
+
+/* ============================== */
+/* CONTAINER PRINCIPAL            */
+/* ============================== */
 
 .container {
-    width: 100%;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 24px;
+    width: 90%;
+    max-width: 1000px; /* Largura máxima para desktops */
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
 }
 
-/* ========================================= */
-/* TELAS DA APLICAÇÃO           */
-/* ========================================= */
-
-.screen {
-    width: 100%;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-}
-
-.hidden {
-    display: none;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-.visible {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ========================================= */
+/* ============================== */
 /* ESTILOS DE AUTENTICAÇÃO        */
-/* ========================================= */
+/* ============================== */
 
-.auth-tabs {
+.auth-container {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 24px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.luxury-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.luxury-title {
+    font-size: 3em;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+.accent {
+    color: #e6a000;
+    font-size: 1.2em;
+}
+
+.luxury-subtitle {
+    font-size: 1em;
+    font-style: italic;
+    color: #aaa;
+    margin: 5px 0 0;
+}
+
+.auth-switcher {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 .auth-btn {
-    padding: 10px 20px;
+    background: none;
     border: none;
-    background-color: transparent;
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1em;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    color: #666;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s ease-in-out;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-.auth-btn.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+.auth-btn:hover, .auth-btn.active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .auth-form {
     display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
 }
 
 .auth-form.active {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
 }
 
-input[type="email"],
-input[type="password"],
-input[type="text"] {
+.form-group {
+    position: relative;
+}
+
+.luxury-input {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
+    padding: 15px 10px 5px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-bottom: 2px solid #555;
+    color: #fff;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
 }
 
-button {
-    padding: 12px 24px;
+.luxury-input:focus {
+    outline: none;
+    border-bottom-color: #e6a000;
+}
+
+.luxury-label {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    color: #888;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.luxury-input:focus + .luxury-label,
+.luxury-input:not(:placeholder-shown) + .luxury-label {
+    top: 0;
+    font-size: 0.8em;
+    color: #e6a000;
+}
+
+.luxury-btn {
+    background: #e6a000;
+    color: #121212;
     border: none;
+    font-family: 'Playfair Display', serif;
+    padding: 15px 30px;
     border-radius: 8px;
-    background-color: #007bff;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+.luxury-btn:hover {
+    background-color: #d19200;
 }
 
-/* ========================================= */
-/* ESTILOS DO CHAT           */
-/* ========================================= */
+/* ============================== */
+/* ESTILOS DO CHAT                */
+/* ============================== */
 
 .chat-container {
-    display: flex;
+    display: none;
     flex-direction: column;
     height: 80vh;
-    max-height: 700px;
+    max-height: 800px;
     width: 100%;
-    max-width: 600px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
 }
 
@@ -133,129 +195,150 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
+    padding: 20px 30px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.chat-title {
-    font-size: 18px;
-    font-weight: 600;
+.chat-subtitle {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.9em;
     margin: 0;
 }
 
 .logout-btn {
     background: none;
     border: none;
-    color: #dc3545;
+    color: #e6a000;
     cursor: pointer;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    font-size: 1em;
+    font-family: 'Playfair Display', serif;
 }
 
-.logout-btn:hover {
-    color: #a71d2a;
-}
-
-.chat-messages {
+.chat-content {
+    display: flex;
     flex-grow: 1;
-    padding: 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
 }
 
-.message {
-    display: flex;
-    flex-direction: column;
-    max-width: 80%;
-    word-wrap: break-word;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.message.user {
-    align-self: flex-end;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 18px 18px 2px 18px;
-    padding: 12px 16px;
-}
-
-.message.ai {
-    align-self: flex-start;
-    background-color: #e9ecef;
-    color: #333;
-    border-radius: 18px 18px 18px 2px;
-    padding: 12px 16px;
-}
-
-.chat-input-area {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #eee;
-}
-
-#questionInput {
-    flex-grow: 1;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 16px;
-    resize: none;
-    max-height: 150px;
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
     overflow-y: auto;
 }
 
-.send-btn {
-    margin-left: 10px;
-    padding: 10px 16px;
-    border-radius: 8px;
-}
-
-/* ========================================= */
-/* ESTILOS DE UTILIDADE         */
-/* ========================================= */
-
-.message-box {
-    display: none;
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 10px;
-    text-align: center;
-    font-weight: 500;
-}
-
-.message-box.info {
-    background-color: #e7f3ff;
-    color: #0056b3;
-}
-
-.message-box.error {
-    background-color: #ffe7e7;
-    color: #a71d2a;
+.sidebar-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #e6a000;
 }
 
 .topic-list {
     list-style: none;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
 }
 
 .topic-item {
-    background-color: #f0f2f5;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
-    color: #555;
+    font-size: 0.9em;
     transition: background-color 0.3s ease;
 }
 
 .topic-item:hover {
-    background-color: #e0e2e5;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 70%;
+    padding: 12px 18px;
+    border-radius: 20px;
+    word-wrap: break-word;
+}
+
+.message.ai {
+    background-color: rgba(255, 255, 255, 0.08);
+    align-self: flex-start;
+    border-top-left-radius: 5px;
+}
+
+.message.user {
+    background-color: #e6a000;
+    color: #121212;
+    align-self: flex-end;
+    border-top-right-radius: 5px;
+}
+
+.input-area {
+    padding: 20px 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.luxury-textarea {
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 10px 15px;
+    color: #fff;
+    font-size: 1em;
+    font-family: 'Playfair Display', serif;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+.luxury-textarea:focus {
+    outline: none;
+    border-color: #e6a000;
+}
+
+.send-btn {
+    background-color: #e6a000;
+    color: #121212;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-btn:hover {
+    background-color: #d19200;
+}
+
+.send-btn svg {
+    width: 20px;
+    height: 20px;
 }
