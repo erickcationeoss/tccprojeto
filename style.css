@@ -1,4 +1,4 @@
-/* style.css - Estilos atualizados para a aplicação com centralização, fontes serifadas e cores minimalistas */
+/* style.css - Estilos atualizados para a aplicação com centralização total, flex, e maior espaçamento */
 
 /* ========================================= */
 /* ESTILOS GLOBAIS */
@@ -6,8 +6,8 @@
 
 body {
     font-family: 'Georgia', 'Times New Roman', Times, serif;
-    background-color: #f5f5f5; /* Cinza claro, não branco absoluto */
-    color: #000000; /* Preto puro */
+    background-color: #f5f5f5; /* Cinza claro */
+    color: #000000;
     margin: 0;
     padding: 0;
     display: flex;
@@ -18,14 +18,15 @@ body {
 
 .container {
     width: 100%;
-    max-width: 800px; /* Container maior */
-    background-color: #fafafa; /* Tom de branco suave */
+    max-width: 900px; /* Container maior */
+    background-color: #fafafa; /* Branco suave */
     border-radius: 8px;
-    padding: 32px;
+    padding: 48px; /* Mais espaçamento */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* Centralização total */
     transition: all 0.5s ease-in-out;
 }
 
@@ -35,11 +36,12 @@ body {
 
 .screen {
     width: 100%;
-    max-width: 600px; /* Tela centralizada e maior */
+    max-width: 700px; /* Tela maior e centralizada */
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center; /* Centralização total */
 }
 
 .hidden {
@@ -61,12 +63,13 @@ body {
 .auth-tabs {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 32px;
+    align-items: center;
+    gap: 20px; /* Mais espaçamento */
+    margin-bottom: 40px;
 }
 
 .auth-btn {
-    padding: 12px 24px;
+    padding: 14px 28px; /* Mais espaçamento */
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -84,30 +87,31 @@ body {
 .auth-form {
     display: none;
     width: 100%;
-    max-width: 400px; /* Formulário centralizado */
+    max-width: 450px; /* Formulário maior e centralizado */
 }
 
 .auth-form.active {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px; /* Mais espaçamento */
     align-items: center;
+    justify-content: center; /* Centralização total */
 }
 
 input[type="email"],
 input[type="password"],
 input[type="text"] {
     width: 100%;
-    padding: 14px;
+    padding: 16px; /* Mais espaçamento */
     border: none;
-    border-bottom: 1px solid #ccc; /* Borda minimalista */
+    border-bottom: 1px solid #ccc;
     background-color: #fafafa;
     font-size: 16px;
     font-family: 'Georgia', 'Times New Roman', Times, serif;
 }
 
 button {
-    padding: 14px 32px;
+    padding: 16px 40px; /* Mais espaçamento */
     border: none;
     border-radius: 8px;
     background-color: #000000;
@@ -129,27 +133,30 @@ button:hover {
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 85vh;
-    max-height: 800px; /* Container de chat maior */
+    height: 90vh; /* Maior altura */
+    max-height: 900px; /* Container maior */
     width: 100%;
-    max-width: 900px; /* Container maior e centralizado */
+    max-width: 1000px; /* Container maior e centralizado */
     background-color: #fafafa;
     border-radius: 8px;
     overflow: hidden;
     transition: all 0.5s ease-in-out;
+    align-items: center;
+    justify-content: center; /* Centralização total */
 }
 
 .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 24px; /* Mais espaçamento */
     background-color: #f5f5f5;
-    border-bottom: none; /* Sem borda */
+    border-bottom: none;
+    width: 100%;
 }
 
 .chat-title {
-    font-size: 20px;
+    font-size: 22px; /* Maior fonte */
     font-weight: 500;
     margin: 0;
 }
@@ -169,20 +176,21 @@ button:hover {
 
 .chat-messages {
     flex-grow: 1;
-    padding: 20px;
+    padding: 24px; /* Mais espaçamento */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px; /* Mais espaçamento */
     align-items: center; /* Mensagens centralizadas */
+    width: 100%;
 }
 
 .message {
     display: flex;
     flex-direction: column;
-    max-width: 70%; /* Mensagens um pouco mais largas */
+    max-width: 75%; /* Mensagens um pouco mais largas */
     word-wrap: break-word;
-    padding: 14px 20px;
+    padding: 16px 24px; /* Mais espaçamento */
     border-radius: 12px;
     transition: opacity 0.3s ease-in-out;
 }
@@ -202,28 +210,31 @@ button:hover {
 .chat-input-area {
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 24px; /* Mais espaçamento */
     background-color: #f5f5f5;
-    border-top: none; /* Sem borda */
+    border-top: none;
+    width: 100%;
+    justify-content: center; /* Centralização */
 }
 
 #questionInput {
     flex-grow: 1;
     border: none;
-    border-bottom: 1px solid #ccc; /* Borda minimalista */
+    border-bottom: 1px solid #ccc;
     border-radius: 0;
-    padding: 10px 14px;
+    padding: 12px 16px; /* Mais espaçamento */
     font-size: 16px;
     font-family: 'Georgia', 'Times New Roman', Times, serif;
     background-color: #fafafa;
     resize: none;
-    max-height: 120px;
+    max-height: 150px;
     overflow-y: auto;
+    max-width: 600px; /* Centralizado e limitado */
 }
 
 .send-btn {
-    margin-left: 12px;
-    padding: 12px 20px;
+    margin-left: 16px; /* Mais espaçamento */
+    padding: 14px 24px; /* Mais espaçamento */
     border-radius: 8px;
 }
 
@@ -233,9 +244,9 @@ button:hover {
 
 .message-box {
     display: none;
-    padding: 12px;
+    padding: 14px; /* Mais espaçamento */
     border-radius: 8px;
-    margin-top: 12px;
+    margin-top: 16px; /* Mais espaçamento */
     text-align: center;
     font-weight: 500;
 }
@@ -255,13 +266,13 @@ button:hover {
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center; /* Lista de tópicos centralizada */
+    gap: 12px; /* Mais espaçamento */
+    justify-content: center;
 }
 
 .topic-item {
     background-color: #f5f5f5;
-    padding: 10px 20px;
+    padding: 12px 24px; /* Mais espaçamento */
     border-radius: 16px;
     cursor: pointer;
     font-size: 14px;
