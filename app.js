@@ -59,120 +59,121 @@ function displayMessage(text, sender) {
 // =========================================
 // LÓGICA DE AUTENTICAÇÃO
 // =========================================
-
-// Ouve mudanças no estado de autenticação (login/logout)
-window.onAuthStateChange((event, session) => {
-    if (session) {
-        // Usuário logado
-        showScreen(chatScreen);
-        console.log('Usuário logado:', session.user);
-    } else {
-        // Usuário deslogado
-        showScreen(authScreen);
-        console.log('Usuário deslogado');
-    }
-});
-
-// Lógica para alternar entre login e cadastro
-authBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        authBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const tab = btn.dataset.tab;
-        document.querySelectorAll('.auth-form').forEach(form => {
-            form.classList.remove('active');
-        });
-        document.getElementById(`${tab}Form`).classList.add('active');
-    });
-});
-
-// Lida com o formulário de login
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    const result = await window.signIn(email, password);
-    if (result.success) {
-        showMessage('Login realizado com sucesso!', 'info');
-    } else {
-        showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
-    }
-});
-
-// Lida com o formulário de cadastro
-signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const fullName = document.getElementById('fullName').value;
-
-    const result = await window.signUp(email, password, { fullName });
-    if (result.success) {
-        showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
-    } else {
-        showMessage(`Erro ao criar conta: ${result.error}`, 'error');
-    }
-});
-
-// Lida com o botão de logout
-logoutBtn.addEventListener('click', async () => {
-    const result = await window.signOut();
-    if (result.success) {
-        showMessage('Você saiu da sua conta.', 'info');
-    } else {
-        showMessage('Erro ao sair da conta.', 'error');
-    }
-});
-
-// =========================================
-// LÓGICA DO CHAT
-// =========================================
-
-// Lida com o envio de perguntas ao pressionar o botão ou a tecla Enter
-async function handleSendMessage() {
-    const question = questionInput.value.trim();
-    if (!question) return;
-
-    // Adiciona a mensagem do usuário ao chat
-    displayMessage(question, 'user');
-    questionInput.value = '';
-
-    // Mostra um estado de "digitando" da IA
-    displayMessage('...', 'ai');
-    const tempAiMessage = chatMessages.lastElementChild;
-
-    try {
-        const response = await window.askEdenAI(question);
-        if (response.success) {
-            tempAiMessage.querySelector('p').innerText = response.data;
+window.onload = function() {
+    // Ouve mudanças no estado de autenticação (login/logout)
+    window.onAuthStateChange((event, session) => {
+        if (session) {
+            // Usuário logado
+            showScreen(chatScreen);
+            console.log('Usuário logado:', session.user);
         } else {
-            tempAiMessage.querySelector('p').innerText = `Erro: ${response.error}`;
+            // Usuário deslogado
+            showScreen(authScreen);
+            console.log('Usuário deslogado');
+        }
+    });
+
+    // Lógica para alternar entre login e cadastro
+    authBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            authBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const tab = btn.dataset.tab;
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(`${tab}Form`).classList.add('active');
+        });
+    });
+
+    // Lida com o formulário de login
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+
+        const result = await window.signIn(email, password);
+        if (result.success) {
+            showMessage('Login realizado com sucesso!', 'info');
+        } else {
+            showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
+        }
+    });
+
+    // Lida com o formulário de cadastro
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const fullName = document.getElementById('fullName').value;
+
+        const result = await window.signUp(email, password, { fullName });
+        if (result.success) {
+            showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
+        } else {
+            showMessage(`Erro ao criar conta: ${result.error}`, 'error');
+        }
+    });
+
+    // Lida com o botão de logout
+    logoutBtn.addEventListener('click', async () => {
+        const result = await window.signOut();
+        if (result.success) {
+            showMessage('Você saiu da sua conta.', 'info');
+        } else {
+            showMessage('Erro ao sair da conta.', 'error');
+        }
+    });
+
+    // =========================================
+    // LÓGICA DO CHAT
+    // =========================================
+
+    // Lida com o envio de perguntas ao pressionar o botão ou a tecla Enter
+    async function handleSendMessage() {
+        const question = questionInput.value.trim();
+        if (!question) return;
+
+        // Adiciona a mensagem do usuário ao chat
+        displayMessage(question, 'user');
+        questionInput.value = '';
+
+        // Mostra um estado de "digitando" da IA
+        displayMessage('...', 'ai');
+        const tempAiMessage = chatMessages.lastElementChild;
+
+        try {
+            const response = await window.askEdenAI(question);
+            if (response.success) {
+                tempAiMessage.querySelector('p').innerText = response.data;
+            } else {
+                tempAiMessage.querySelector('p').innerText = `Erro: ${response.error}`;
+                tempAiMessage.classList.add('error');
+            }
+        } catch (error) {
+            tempAiMessage.querySelector('p').innerText = 'Houve um erro de comunicação.';
             tempAiMessage.classList.add('error');
         }
-    } catch (error) {
-        tempAiMessage.querySelector('p').innerText = 'Houve um erro de comunicação.';
-        tempAiMessage.classList.add('error');
     }
-}
 
-sendBtn.addEventListener('click', handleSendMessage);
-questionInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSendMessage();
-    }
-});
-
-// Lógica para alternar entre as abas do chat
-chatTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        chatTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        // Futuramente, aqui você pode adicionar a lógica para mostrar o conteúdo de "Histórico" ou "Sugestões"
+    sendBtn.addEventListener('click', handleSendMessage);
+    questionInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
     });
-});
 
-// Inicialização da aplicação
-console.log('App inicializado');
+    // Lógica para alternar entre as abas do chat
+    chatTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            chatTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            // Futuramente, aqui você pode adicionar a lógica para mostrar o conteúdo de "Histórico" ou "Sugestões"
+        });
+    });
+
+    // Inicialização da aplicação
+    console.log('App inicializado');
+};
