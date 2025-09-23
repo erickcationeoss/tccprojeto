@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduAI - Assistente de Estudos</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="style.css">
     
     <!-- ✅ CONFIGURAÇÃO PRIMEIRO! -->
     <script>
@@ -20,13 +20,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
 
     <!-- ✅ POR FIM SEUS SCRIPTS CORRIGIDOS -->
-    <!-- Apenas global.js precisa ser um módulo para importar os outros -->
-    <script type="module" src="global.js"></script>
+    <!-- Agora apenas um arquivo de módulo centralizado -->
+    <script type="module" src="main.js"></script>
     <!-- O app.js deve vir depois e não precisa ser um módulo,
-    pois ele acessa as funções expostas pelo global.js -->
+    pois ele acessa as funções expostas pelo main.js -->
     <script src="app.js"></script>
-     <script src="auth.js"></script>
-      <script type= "module" src="eden-ai.js"></script>
 </head>
 <body>
     <div class="luxury-background">
