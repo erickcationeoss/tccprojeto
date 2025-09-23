@@ -105,6 +105,8 @@ window.onload = function() {
             const result = await window.signIn(email, password);
             if (result.success) {
                 showMessage('Login realizado com sucesso!', 'info');
+                // ✅ Adiciona esta linha para mudar de tela imediatamente
+                showScreen(chatScreen);
             } else {
                 showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
             }
@@ -121,7 +123,14 @@ window.onload = function() {
 
             const result = await window.signUp(email, password, { fullName });
             if (result.success) {
-                showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
+                // ✅ Faz o login imediatamente após o cadastro para mudar de tela
+                const signInResult = await window.signIn(email, password);
+                if (signInResult.success) {
+                    showMessage('Conta criada e login realizado com sucesso!', 'info');
+                    showScreen(chatScreen);
+                } else {
+                    showMessage('Conta criada, mas houve um erro no login automático. Tente fazer login manualmente.', 'error');
+                }
             } else {
                 showMessage(`Erro ao criar conta: ${result.error}`, 'error');
             }
