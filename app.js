@@ -1,20 +1,8 @@
 // app.js - Controla toda a interface de usuário e a lógica de interação.
 
 // =========================================
-// VARIÁVEIS GLOBAIS E ELEMENTOS DA UI
+// FUNÇÕES UTILITÁRIAS
 // =========================================
-const authScreen = document.getElementById('authScreen');
-const chatScreen = document.getElementById('chatScreen');
-
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
-const authBtns = document.querySelectorAll('.auth-btn');
-
-const logoutBtn = document.querySelector('.logout-btn');
-const chatMessages = document.getElementById('chatMessages');
-const questionInput = document.getElementById('questionInput');
-const sendBtn = document.querySelector('.send-btn');
-const chatTabs = document.querySelectorAll('.chat-tabs .tab');
 
 // Função para mostrar mensagens de feedback temporárias
 function showMessage(text, type = 'info') {
@@ -32,18 +20,9 @@ function showMessage(text, type = 'info') {
     }, 3000);
 }
 
-// Função para alternar a visibilidade das telas
-function showScreen(screen) {
-    authScreen.classList.remove('visible');
-    chatScreen.classList.remove('visible');
-    authScreen.classList.add('hidden');
-    chatScreen.classList.add('hidden');
-    screen.classList.remove('hidden');
-    screen.classList.add('visible');
-}
-
 // Função para exibir uma mensagem no chat
 function displayMessage(text, sender) {
+    const chatMessages = document.getElementById('chatMessages');
     const messageEl = document.createElement('div');
     messageEl.className = `message ${sender}`;
     messageEl.innerHTML = `
@@ -57,74 +36,109 @@ function displayMessage(text, sender) {
 }
 
 // =========================================
-// LÓGICA DE AUTENTICAÇÃO
+// LÓGICA PRINCIPAL (EXECUTADA APÓS O CARREGAMENTO DA PÁGINA)
 // =========================================
 window.onload = function() {
+    // Variáveis globais e elementos da UI - Agora são inicializados aqui
+    const authScreen = document.getElementById('authScreen');
+    const chatScreen = document.getElementById('chatScreen');
+
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const authBtns = document.querySelectorAll('.auth-btn');
+
+    const logoutBtn = document.querySelector('.logout-btn');
+    const chatMessages = document.getElementById('chatMessages');
+    const questionInput = document.getElementById('questionInput');
+    const sendBtn = document.querySelector('.send-btn');
+    const chatTabs = document.querySelectorAll('.chat-tabs .tab');
+    
+    // Função para alternar a visibilidade das telas
+    function showScreen(screen) {
+        authScreen.classList.remove('visible');
+        chatScreen.classList.remove('visible');
+        authScreen.classList.add('hidden');
+        chatScreen.classList.add('hidden');
+        screen.classList.remove('hidden');
+        screen.classList.add('visible');
+    }
+
     // Ouve mudanças no estado de autenticação (login/logout)
-    window.onAuthStateChange((event, session) => {
-        if (session) {
-            // Usuário logado
-            showScreen(chatScreen);
-            console.log('Usuário logado:', session.user);
-        } else {
-            // Usuário deslogado
-            showScreen(authScreen);
-            console.log('Usuário deslogado');
-        }
-    });
+    if (typeof window.onAuthStateChange === 'function') {
+        window.onAuthStateChange((event, session) => {
+            if (session) {
+                // Usuário logado
+                showScreen(chatScreen);
+                console.log('Usuário logado:', session.user);
+            } else {
+                // Usuário deslogado
+                showScreen(authScreen);
+                console.log('Usuário deslogado');
+            }
+        });
+    }
 
     // Lógica para alternar entre login e cadastro
-    authBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            authBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    if (authBtns) {
+        authBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                authBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-            const tab = btn.dataset.tab;
-            document.querySelectorAll('.auth-form').forEach(form => {
-                form.classList.remove('active');
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById(`${tab}Form`).classList.add('active');
             });
-            document.getElementById(`${tab}Form`).classList.add('active');
         });
-    });
+    }
+
 
     // Lida com o formulário de login
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
-        const result = await window.signIn(email, password);
-        if (result.success) {
-            showMessage('Login realizado com sucesso!', 'info');
-        } else {
-            showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
-        }
-    });
+            const result = await window.signIn(email, password);
+            if (result.success) {
+                showMessage('Login realizado com sucesso!', 'info');
+            } else {
+                showMessage('Erro ao fazer login. Verifique suas credenciais.', 'error');
+            }
+        });
+    }
 
     // Lida com o formulário de cadastro
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-        const fullName = document.getElementById('fullName').value;
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const fullName = document.getElementById('fullName').value;
 
-        const result = await window.signUp(email, password, { fullName });
-        if (result.success) {
-            showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
-        } else {
-            showMessage(`Erro ao criar conta: ${result.error}`, 'error');
-        }
-    });
+            const result = await window.signUp(email, password, { fullName });
+            if (result.success) {
+                showMessage('Conta criada com sucesso! Faça login para continuar.', 'info');
+            } else {
+                showMessage(`Erro ao criar conta: ${result.error}`, 'error');
+            }
+        });
+    }
 
     // Lida com o botão de logout
-    logoutBtn.addEventListener('click', async () => {
-        const result = await window.signOut();
-        if (result.success) {
-            showMessage('Você saiu da sua conta.', 'info');
-        } else {
-            showMessage('Erro ao sair da conta.', 'error');
-        }
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            const result = await window.signOut();
+            if (result.success) {
+                showMessage('Você saiu da sua conta.', 'info');
+            } else {
+                showMessage('Erro ao sair da conta.', 'error');
+            }
+        });
+    }
 
     // =========================================
     // LÓGICA DO CHAT
@@ -157,22 +171,28 @@ window.onload = function() {
         }
     }
 
-    sendBtn.addEventListener('click', handleSendMessage);
-    questionInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    });
+    if (sendBtn) {
+        sendBtn.addEventListener('click', handleSendMessage);
+    }
+    if (questionInput) {
+        questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+    }
 
     // Lógica para alternar entre as abas do chat
-    chatTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            chatTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            // Futuramente, aqui você pode adicionar a lógica para mostrar o conteúdo de "Histórico" ou "Sugestões"
+    if (chatTabs) {
+        chatTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                chatTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                // Futuramente, aqui você pode adicionar a lógica para mostrar o conteúdo de "Histórico" ou "Sugestões"
+            });
         });
-    });
+    }
 
     // Inicialização da aplicação
     console.log('App inicializado');
