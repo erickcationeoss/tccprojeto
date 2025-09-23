@@ -19,12 +19,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
 
-    <!-- ✅ POR FIM SEUS SCRIPTS (SEM MODULE!) -->
-    <script type="module" src="supabase-client.js"></script>
-    <script type="module" src="auth.js"></script>
+    <!-- ✅ POR FIM SEUS SCRIPTS CORRIGIDOS -->
+    <!-- Apenas global.js precisa ser um módulo para importar os outros -->
     <script type="module" src="global.js"></script>
-    <script type="module" src="eden-ai.js"></script>
-    <script type="module" src="app.js"></script>
+    <!-- O app.js deve vir depois e não precisa ser um módulo,
+    pois ele acessa as funções expostas pelo global.js -->
+    <script src="app.js"></script>
 </head>
 <body>
     <div class="luxury-background">

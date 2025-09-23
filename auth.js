@@ -1,130 +1,109 @@
-import { supabase } from './supabase-client.js'
+// auth.js - Funções de autenticação e gerenciamento de usuário
+// Importa a instância do cliente Supabase do arquivo supabase-client.js
+import { supabase } from './supabase-client.js';
 
-// Função de cadastro simplificada
-export async function signUp(email, password) {
+// Função de cadastro de usuário
+export async function signUp(email, password, options = {}) {
   try {
-    // 1. Criar usuário no Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-    })
+      options: {
+        data: {
+          full_name: options.fullName || null
+        }
+      }
+    });
 
-    if (authError) throw authError
+    if (error) {
+      throw error;
+    }
 
-    // 2. Criar perfil básico (apenas id e created_at)
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert([{ id: authData.user.id }])
-
-    if (profileError) throw profileError
-
-    return { success: true, data: authData }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro no cadastro:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no cadastro:', error);
+    return { success: false, error: error.message };
   }
 }
 
-// Função de login (mantida igual)
+// Função de login
 export async function signIn(email, password) {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
+    });
 
-    if (error) throw error
+    if (error) {
+      throw error;
+    }
 
-    return { success: true, data }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro no login:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no login:', error);
+    return { success: false, error: error.message };
   }
 }
 
-// Função de logout (mantida igual)
+// Função de logout
 export async function signOut() {
   try {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
-    return { success: true }
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw error;
+    }
+    return { success: true };
   } catch (error) {
-    console.error('Erro no logout:', error)
-    return { success: false, error: error.message }
+    console.error('Erro no logout:', error);
+    return { success: false, error: error.message };
   }
 }
 
-// Verificar estado de autenticação (mantida)
-export function getAuthState() {
-  return supabase.auth.getSession()
+// Função para obter a sessão atual
+export async function getAuthState() {
+  return supabase.auth.getSession();
 }
 
-// Ouvir mudanças de estado (mantida)
+// Função para obter o usuário atual
+export async function getCurrentUser() {
+  return supabase.auth.getUser();
+}
+
+// Função para ouvir mudanças no estado de autenticação
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange(callback)
+  return supabase.auth.onAuthStateChange(callback);
 }
 
-// Obter usuário atual (mantida)
-export function getCurrentUser() {
-  return supabase.auth.getUser()
-}
-
-// Buscar perfil do usuário (simplificada - agora só retorna id e created_at)
-export async function getUserProfile(userId) {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, created_at')
-      .eq('id', userId)
-      .single()
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Erro ao buscar perfil:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// Redefinir senha (mantida)
+// Função para redefinir a senha via e-mail
 export async function resetPassword(email) {
   try {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/update-password`,
-    })
+      redirectTo: `${window.location.origin}/update-password`
+    });
 
-    if (error) throw error
-
-    return { success: true, data }
+    if (error) {
+      throw error;
+    }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro ao redefinir senha:', error)
-    return { success: false, error: error.message }
+    console.error('Erro ao redefinir senha:', error);
+    return { success: false, error: error.message };
   }
 }
 
-// Atualizar senha (mantida)
+// Função para atualizar a senha
 export async function updatePassword(newPassword) {
   try {
     const { data, error } = await supabase.auth.updateUser({
-      password: newPassword,
-    })
+      password: newPassword
+    });
 
-    if (error) throw error
-
-    return { success: true, data }
+    if (error) {
+      throw error;
+    }
+    return { success: true, data };
   } catch (error) {
-    console.error('Erro ao atualizar senha:', error)
-    return { success: false, error: error.message }
+    console.error('Erro ao atualizar senha:', error);
+    return { success: false, error: error.message };
   }
 }
-
-// ... (o resto do seu auth.js) ...
-
-// ===== EXPORTAÇÃO PARA ESCOPO GLOBAL =====
-// Necessário para o app.js acessar estas funções
-window.signUp = signUp;
-window.signIn = signIn;
-window.signOut = signOut;
-window.getAuthState = getAuthState;
-window.getCurrentUser = getCurrentUser;
