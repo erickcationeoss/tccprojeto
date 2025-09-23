@@ -86,33 +86,38 @@ function addMessage(text, type = 'ai', isTemp = false) {
 // =========================================
 
 /**
- * Alterna entre a tela de autenticação e a de chat.
+ * Alterna entre a tela de autenticação e a de chat com transição.
  * @param {string} screenName - O nome da tela ('auth' ou 'chat').
  */
 function showScreen(screenName) {
-    const screens = {
-        'auth': authScreen,
-        'chat': chatScreen
-    };
-
-    const screenToShow = screens[screenName];
-    const screenToHide = screenName === 'auth' ? chatScreen : authScreen;
-
-    if (screenToShow && screenToHide) {
-        console.log(`Mostrando tela: ${screenName}`);
-        screenToHide.classList.remove('visible');
-        screenToHide.classList.add('hidden');
-
-        // Espera a transição de ocultar para evitar flashes
-        setTimeout(() => {
-            screenToShow.classList.remove('hidden');
-            screenToShow.classList.add('visible');
-            if (screenName === 'chat') {
+    if (screenName === 'auth') {
+        if (chatScreen) {
+            chatScreen.classList.remove('visible');
+            chatScreen.classList.add('hidden');
+        }
+        if (authScreen) {
+            // Pequeno delay para garantir que a transição de ocultar seja processada
+            setTimeout(() => {
+                authScreen.classList.remove('hidden');
+                authScreen.classList.add('visible');
+            }, 500); // tempo de 500ms é o da sua transição no CSS
+        }
+    } else if (screenName === 'chat') {
+        if (authScreen) {
+            authScreen.classList.remove('visible');
+            authScreen.classList.add('hidden');
+        }
+        if (chatScreen) {
+            // Pequeno delay para garantir que a transição de ocultar seja processada
+            setTimeout(() => {
+                chatScreen.classList.remove('hidden');
+                chatScreen.classList.add('visible');
                 initChat();
-            }
-        }, 500); 
+            }, 500); // tempo de 500ms é o da sua transição no CSS
+        }
     }
 }
+
 
 // =========================================
 // LÓGICA DE AUTENTICAÇÃO
