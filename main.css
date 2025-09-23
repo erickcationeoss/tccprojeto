@@ -1,6 +1,6 @@
 /*
     main.css - Estilos para o tema "luxury" do EduAI
-    Foco: Centralização, proporção, fonte serifada e animações sutis
+    Foco: Tema laranja com elementos brancos, tela cheia sem bordas
 */
 
 /* ============================== */
@@ -9,29 +9,20 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
 
-body {
-    font-family: 'Playfair Display', serif;
+* {
     margin: 0;
     padding: 0;
-    background-color: #121212;
-    color: #f0f0f0;
-    line-height: 1.6;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Evita barras de rolagem */
-    position: relative;
+    box-sizing: border-box;
 }
 
-.luxury-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, #1a1a1a 0%, #0d0d0d 100%);
-    z-index: -2;
+body {
+    font-family: 'Playfair Display', serif;
+    background-color: #FF6B00; /* Cor de fundo laranja */
+    color: #FFFFFF; /* Texto branco */
+    line-height: 1.6;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
 /* ============================== */
@@ -39,17 +30,12 @@ body {
 /* ============================== */
 
 .container {
-    width: 90%;
-    max-width: 1000px; /* Largura máxima para desktops */
-    background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FF6B00; /* Fundo laranja */
 }
 
 /* ============================== */
@@ -61,11 +47,17 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo branco translúcido */
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .luxury-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .luxury-title {
@@ -73,17 +65,18 @@ body {
     font-weight: 700;
     margin: 0;
     letter-spacing: 2px;
+    color: #FFFFFF; /* Texto branco */
 }
 
 .accent {
-    color: #e6a000;
+    color: #FFFFFF; /* Mantendo branco para destaque */
     font-size: 1.2em;
 }
 
 .luxury-subtitle {
     font-size: 1em;
     font-style: italic;
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.8); /* Texto branco com transparência */
     margin: 5px 0 0;
 }
 
@@ -96,7 +89,7 @@ body {
 .auth-btn {
     background: none;
     border: none;
-    color: #fff;
+    color: #FFFFFF; /* Texto branco */
     font-family: 'Playfair Display', serif;
     font-size: 1em;
     cursor: pointer;
@@ -106,7 +99,7 @@ body {
 }
 
 .auth-btn:hover, .auth-btn.active {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2); /* Fundo branco translúcido */
 }
 
 .auth-form {
@@ -127,24 +120,25 @@ body {
 .luxury-input {
     width: 100%;
     padding: 15px 10px 5px 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.15); /* Fundo branco translúcido */
     border: none;
-    border-bottom: 2px solid #555;
-    color: #fff;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5); /* Borda branca */
+    color: #FFFFFF; /* Texto branco */
     font-size: 1em;
     transition: border-color 0.3s ease;
+    border-radius: 5px;
 }
 
 .luxury-input:focus {
     outline: none;
-    border-bottom-color: #e6a000;
+    border-bottom-color: #FFFFFF; /* Borda branca no foco */
 }
 
 .luxury-label {
     position: absolute;
     top: 15px;
     left: 10px;
-    color: #888;
+    color: rgba(255, 255, 255, 0.7); /* Texto branco com transparência */
     pointer-events: none;
     transition: all 0.3s ease;
 }
@@ -153,12 +147,12 @@ body {
 .luxury-input:not(:placeholder-shown) + .luxury-label {
     top: 0;
     font-size: 0.8em;
-    color: #e6a000;
+    color: #FFFFFF; /* Texto branco */
 }
 
 .luxury-btn {
-    background: #e6a000;
-    color: #121212;
+    background: #FFFFFF; /* Fundo branco */
+    color: #FF6B00; /* Texto laranja */
     border: none;
     font-family: 'Playfair Display', serif;
     padding: 15px 30px;
@@ -166,10 +160,11 @@ body {
     font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 700;
 }
 
 .luxury-btn:hover {
-    background-color: #d19200;
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco mais escuro */
 }
 
 /* ============================== */
@@ -179,15 +174,9 @@ body {
 .chat-container {
     display: none;
     flex-direction: column;
-    height: 80vh;
-    max-height: 800px;
-    width: 100%;
-    max-width: 1000px;
-    background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100vw;
+    height: 100vh;
+    background-color: #FF6B00; /* Fundo laranja */
     overflow: hidden;
 }
 
@@ -196,13 +185,13 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 30px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo branco translúcido */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .chat-subtitle {
     font-style: italic;
-    color: #aaa;
+    color: rgba(255, 255, 255, 0.8); /* Texto branco com transparência */
     font-size: 0.9em;
     margin: 0;
 }
@@ -210,7 +199,7 @@ body {
 .logout-btn {
     background: none;
     border: none;
-    color: #e6a000;
+    color: #FFFFFF; /* Texto branco */
     cursor: pointer;
     font-size: 1em;
     font-family: 'Playfair Display', serif;
@@ -218,14 +207,14 @@ body {
 
 .chat-content {
     display: flex;
-    flex-grow: 1;
+    height: calc(100vh - 80px); /* Altura total menos o cabeçalho */
 }
 
 .sidebar {
     width: 250px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(0, 0, 0, 0.1); /* Fundo escuro translúcido */
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
     overflow-y: auto;
 }
 
@@ -233,7 +222,7 @@ body {
     font-size: 1.2em;
     font-weight: 700;
     margin-bottom: 15px;
-    color: #e6a000;
+    color: #FFFFFF; /* Texto branco */
 }
 
 .topic-list {
@@ -242,17 +231,18 @@ body {
 }
 
 .topic-item {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo branco translúcido */
     padding: 10px 15px;
     margin-bottom: 10px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s ease;
+    color: #FFFFFF; /* Texto branco */
 }
 
 .topic-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2); /* Fundo branco mais translúcido */
 }
 
 .chat-main {
@@ -278,21 +268,22 @@ body {
 }
 
 .message.ai {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.15); /* Fundo branco translúcido */
     align-self: flex-start;
     border-top-left-radius: 5px;
+    color: #FFFFFF; /* Texto branco */
 }
 
 .message.user {
-    background-color: #e6a000;
-    color: #121212;
+    background-color: #FFFFFF; /* Fundo branco */
+    color: #FF6B00; /* Texto laranja */
     align-self: flex-end;
     border-top-right-radius: 5px;
 }
 
 .input-area {
     padding: 20px 30px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1); /* Fundo escuro translúcido */
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -304,11 +295,11 @@ body {
 
 .luxury-textarea {
     flex-grow: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15); /* Fundo branco translúcido */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 15px;
     padding: 10px 15px;
-    color: #fff;
+    color: #FFFFFF; /* Texto branco */
     font-size: 1em;
     font-family: 'Playfair Display', serif;
     resize: none;
@@ -317,12 +308,12 @@ body {
 
 .luxury-textarea:focus {
     outline: none;
-    border-color: #e6a000;
+    border-color: #FFFFFF; /* Borda branca no foco */
 }
 
 .send-btn {
-    background-color: #e6a000;
-    color: #121212;
+    background-color: #FFFFFF; /* Fundo branco */
+    color: #FF6B00; /* Texto laranja */
     border: none;
     border-radius: 50%;
     width: 45px;
@@ -335,10 +326,107 @@ body {
 }
 
 .send-btn:hover {
-    background-color: #d19200;
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco mais escuro */
 }
 
 .send-btn svg {
     width: 20px;
     height: 20px;
+    fill: #FF6B00; /* Ícone laranja */
+}
+
+/* ============================== */
+/* ANIMAÇÕES SUTIS                */
+/* ============================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.chat-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.message {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================== */
+/* RESPONSIVIDADE                 */
+/* ============================== */
+
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 20px;
+        padding: 30px 20px;
+    }
+    
+    .luxury-title {
+        font-size: 2.5em;
+    }
+    
+    .chat-content {
+        flex-direction: column;
+        height: calc(100vh - 70px);
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: 150px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    
+    .topic-list {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+    }
+    
+    .topic-item {
+        min-width: 120px;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+    
+    .chat-header {
+        padding: 15px 20px;
+    }
+    
+    .input-area {
+        padding: 15px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .luxury-title {
+        font-size: 2em;
+    }
+    
+    .auth-switcher {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .sidebar {
+        height: 120px;
+        padding: 15px;
+    }
+    
+    .topic-item {
+        min-width: 100px;
+        font-size: 0.8em;
+        padding: 8px 12px;
+    }
 }
