@@ -36,103 +36,101 @@
             <div class="particle"></div>
         </div>
         
-        <div class="container">
+        <div class="container screen" id="authScreen">
             <!-- Tela de Autenticação -->
-            <div class="auth-container" id="authScreen">
-                <div class="luxury-header">
-                    <h1 class="luxury-title">Edu<span class="accent">AI</span></h1>
-                    <p class="luxury-subtitle">Sua elegância em aprender</p>
-                </div>
-
-                <div class="auth-switcher">
-                    <button class="auth-btn active" data-tab="login">Já tenho uma conta</button>
-                    <button class="auth-btn" data-tab="signup">Sou novo</button>
-                </div>
-
-                <form class="auth-form active" id="loginForm">
-                    <div class="form-group">
-                        <input type="email" id="loginEmail" required class="luxury-input">
-                        <label for="loginEmail" class="luxury-label">Email</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="loginPassword" required class="luxury-input">
-                        <label for="loginPassword" class="luxury-label">Senha</label>
-                    </div>
-                    <button type="submit" class="luxury-btn">Acessar</button>
-                </form>
-
-                <form class="auth-form" id="signupForm">
-                    <div class="form-group">
-                        <input type="email" id="signupEmail" required class="luxury-input">
-                        <label for="signupEmail" class="luxury-label">Email</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signupPassword" required class="luxury-input">
-                        <label for="signupPassword" class="luxury-label">Senha</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="fullName" class="luxury-input">
-                        <label for="fullName" class="luxury-label">Nome Completo (opcional)</label>
-                    </div>
-                    <button type="submit" class="luxury-btn">Criar Conta</button>
-                </form>
+            <div class="luxury-header">
+                <h1 class="luxury-title">Edu<span class="accent">AI</span></h1>
+                <p class="luxury-subtitle">Sua elegância em aprender</p>
             </div>
 
-            <!-- Tela do Chat (inicialmente oculta) -->
-            <div class="chat-container" id="chatScreen">
-                <div class="chat-header">
-                    <div class="header-left">
-                        <h2 class="chat-title">Edu<span class="accent">AI</span></h2>
-                        <p class="chat-subtitle">Assistente pessoal de estudos</p>
-                    </div>
-                    <div class="header-right">
-                        <button class="logout-btn">Sair</button>
+            <div class="auth-switcher">
+                <button class="auth-btn active" data-tab="login">Já tenho uma conta</button>
+                <button class="auth-btn" data-tab="signup">Sou novo</button>
+            </div>
+
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" required class="luxury-input">
+                    <label for="loginEmail" class="luxury-label">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" required class="luxury-input">
+                    <label for="loginPassword" class="luxury-label">Senha</label>
+                </div>
+                <button type="submit" class="luxury-btn">Acessar</button>
+            </form>
+
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <input type="email" id="signupEmail" required class="luxury-input">
+                    <label for="signupEmail" class="luxury-label">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupPassword" required class="luxury-input">
+                    <label for="signupPassword" class="luxury-label">Senha</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="fullName" class="luxury-input">
+                    <label for="fullName" class="luxury-label">Nome Completo (opcional)</label>
+                </div>
+                <button type="submit" class="luxury-btn">Criar Conta</button>
+            </form>
+        </div>
+
+        <!-- Tela do Chat (agora com a classe 'hidden' por padrão) -->
+        <div class="chat-container screen hidden" id="chatScreen">
+            <div class="chat-header">
+                <div class="header-left">
+                    <h2 class="chat-title">Edu<span class="accent">AI</span></h2>
+                    <p class="chat-subtitle">Assistente pessoal de estudos</p>
+                </div>
+                <div class="header-right">
+                    <button class="logout-btn">Sair</button>
+                </div>
+            </div>
+
+            <div class="chat-tabs">
+                <button class="tab active" data-tab="chat">Conversa</button>
+                <button class="tab" data-tab="history">Histórico</button>
+                <button class="tab" data-tab="suggestions">Sugestões</button>
+            </div>
+
+            <div class="chat-content">
+                <div class="sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Tópicos Recentes</h3>
+                        <div class="topic-list">
+                            <div class="topic-item">Matemática Avançada</div>
+                            <div class="topic-item">História do Brasil</div>
+                            <div class="topic-item">Programação</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="chat-tabs">
-                    <button class="tab active" data-tab="chat">Conversa</button>
-                    <button class="tab" data-tab="history">Histórico</button>
-                    <button class="tab" data-tab="suggestions">Sugestões</button>
-                </div>
-
-                <div class="chat-content">
-                    <div class="sidebar">
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">Tópicos Recentes</h3>
-                            <div class="topic-list">
-                                <div class="topic-item">Matemática Avançada</div>
-                                <div class="topic-item">História do Brasil</div>
-                                <div class="topic-item">Programação</div>
+                <div class="chat-main">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-content">
+                                <p>Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje em seu caminho do conhecimento?</p>
                             </div>
+                            <span class="message-time">12:00</span>
                         </div>
                     </div>
 
-                    <div class="chat-main">
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="message ai">
-                                <div class="message-content">
-                                    <p>Olá! Sou seu assistente de estudos. Como posso ajudá-lo hoje em seu caminho do conhecimento?</p>
-                                </div>
-                                <span class="message-time">12:00</span>
-                            </div>
-                        </div>
-
-                        <div class="input-area">
-                            <div class="input-container">
-                                <textarea 
-                                    id="questionInput" 
-                                    class="luxury-textarea" 
-                                    placeholder="Digite sua pergunta sobre estudos..."
-                                    rows="1"
-                                ></textarea>
-                                <button class="send-btn">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                        <path d="M22 2L11 13" stroke="currentColor" stroke-width="2"/>
-                                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2"/>
-                                    </svg>
-                                </button>
-                            </div>
+                    <div class="input-area">
+                        <div class="input-container">
+                            <textarea 
+                                id="questionInput" 
+                                class="luxury-textarea" 
+                                placeholder="Digite sua pergunta sobre estudos..."
+                                rows="1"
+                            ></textarea>
+                            <button class="send-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M22 2L11 13" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>

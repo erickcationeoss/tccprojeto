@@ -151,7 +151,7 @@ window.onload = function() {
 
     // =========================================
     // LÓGICA DO CHAT
-    // =========================================
+// =========================================
 
     // Lida com o envio de perguntas ao pressionar o botão ou a tecla Enter
     async function handleSendMessage() {
