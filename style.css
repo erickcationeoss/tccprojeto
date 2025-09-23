@@ -1,13 +1,13 @@
-/* style.css - Estilos básicos para a aplicação */
+/* style.css - Estilos atualizados para a aplicação com centralização, fontes serifadas e cores minimalistas */
 
 /* ========================================= */
-/* ESTILOS GLOBAIS             */
+/* ESTILOS GLOBAIS */
 /* ========================================= */
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: 'Georgia', 'Times New Roman', Times, serif;
+    background-color: #f5f5f5; /* Cinza claro, não branco absoluto */
+    color: #000000; /* Preto puro */
     margin: 0;
     padding: 0;
     display: flex;
@@ -18,22 +18,28 @@ body {
 
 .container {
     width: 100%;
-    max-width: 400px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 24px;
+    max-width: 800px; /* Container maior */
+    background-color: #fafafa; /* Tom de branco suave */
+    border-radius: 8px;
+    padding: 32px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     transition: all 0.5s ease-in-out;
 }
 
 /* ========================================= */
-/* TELAS DA APLICAÇÃO           */
+/* TELAS DA APLICAÇÃO */
 /* ========================================= */
 
 .screen {
     width: 100%;
+    max-width: 600px; /* Tela centralizada e maior */
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .hidden {
@@ -43,90 +49,92 @@ body {
 }
 
 .visible {
-    display: block;
+    display: flex;
     opacity: 1;
     transform: translateY(0);
 }
 
 /* ========================================= */
-/* ESTILOS DE AUTENTICAÇÃO        */
+/* ESTILOS DE AUTENTICAÇÃO */
 /* ========================================= */
 
 .auth-tabs {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin-bottom: 32px;
 }
 
 .auth-btn {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
     background-color: transparent;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
-    color: #666;
-    border-bottom: 2px solid transparent;
+    color: #333333;
     transition: all 0.3s ease-in-out;
 }
 
 .auth-btn.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+    color: #000000;
+    border-bottom: 2px solid #000000;
 }
 
 .auth-form {
     display: none;
+    width: 100%;
+    max-width: 400px; /* Formulário centralizado */
 }
 
 .auth-form.active {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+    align-items: center;
 }
 
 input[type="email"],
 input[type="password"],
 input[type="text"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
+    padding: 14px;
+    border: none;
+    border-bottom: 1px solid #ccc; /* Borda minimalista */
+    background-color: #fafafa;
     font-size: 16px;
+    font-family: 'Georgia', 'Times New Roman', Times, serif;
 }
 
 button {
-    padding: 12px 24px;
+    padding: 14px 32px;
     border: none;
     border-radius: 8px;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #000000;
+    color: #fafafa;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #333333;
 }
 
 /* ========================================= */
-/* ESTILOS DO CHAT           */
+/* ESTILOS DO CHAT */
 /* ========================================= */
 
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 80vh;
-    max-height: 700px;
+    height: 85vh;
+    max-height: 800px; /* Container de chat maior */
     width: 100%;
-    max-width: 600px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 900px; /* Container maior e centralizado */
+    background-color: #fafafa;
+    border-radius: 8px;
     overflow: hidden;
     transition: all 0.5s ease-in-out;
 }
@@ -135,109 +143,111 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-bottom: none; /* Sem borda */
 }
 
 .chat-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 500;
     margin: 0;
 }
 
 .logout-btn {
     background: none;
     border: none;
-    color: #dc3545;
+    color: #000000;
     cursor: pointer;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .logout-btn:hover {
-    color: #a71d2a;
+    color: #333333;
 }
 
 .chat-messages {
     flex-grow: 1;
-    padding: 16px;
+    padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+    align-items: center; /* Mensagens centralizadas */
 }
 
 .message {
     display: flex;
     flex-direction: column;
-    max-width: 80%;
+    max-width: 70%; /* Mensagens um pouco mais largas */
     word-wrap: break-word;
+    padding: 14px 20px;
+    border-radius: 12px;
     transition: opacity 0.3s ease-in-out;
 }
 
 .message.user {
     align-self: flex-end;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 18px 18px 2px 18px;
-    padding: 12px 16px;
+    background-color: #000000;
+    color: #fafafa;
 }
 
 .message.ai {
     align-self: flex-start;
-    background-color: #e9ecef;
-    color: #333;
-    border-radius: 18px 18px 18px 2px;
-    padding: 12px 16px;
+    background-color: #f5f5f5;
+    color: #000000;
 }
 
 .chat-input-area {
     display: flex;
     align-items: center;
-    padding: 16px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #eee;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-top: none; /* Sem borda */
 }
 
 #questionInput {
     flex-grow: 1;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 8px 12px;
+    border: none;
+    border-bottom: 1px solid #ccc; /* Borda minimalista */
+    border-radius: 0;
+    padding: 10px 14px;
     font-size: 16px;
+    font-family: 'Georgia', 'Times New Roman', Times, serif;
+    background-color: #fafafa;
     resize: none;
-    max-height: 150px;
+    max-height: 120px;
     overflow-y: auto;
 }
 
 .send-btn {
-    margin-left: 10px;
-    padding: 10px 16px;
+    margin-left: 12px;
+    padding: 12px 20px;
     border-radius: 8px;
 }
 
 /* ========================================= */
-/* ESTILOS DE UTILIDADE         */
+/* ESTILOS DE UTILIDADE */
 /* ========================================= */
 
 .message-box {
     display: none;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
-    margin-top: 10px;
+    margin-top: 12px;
     text-align: center;
     font-weight: 500;
 }
 
 .message-box.info {
-    background-color: #e7f3ff;
-    color: #0056b3;
+    background-color: #f5f5f5;
+    color: #000000;
 }
 
 .message-box.error {
-    background-color: #ffe7e7;
-    color: #a71d2a;
+    background-color: #f5f5f5;
+    color: #000000;
 }
 
 .topic-list {
@@ -245,19 +255,20 @@ button:hover {
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
+    justify-content: center; /* Lista de tópicos centralizada */
 }
 
 .topic-item {
-    background-color: #f0f2f5;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background-color: #f5f5f5;
+    padding: 10px 20px;
+    border-radius: 16px;
     cursor: pointer;
     font-size: 14px;
-    color: #555;
+    color: #000000;
     transition: background-color 0.3s ease;
 }
 
 .topic-item:hover {
-    background-color: #e0e2e5;
+    background-color: #e5e5e5;
 }
