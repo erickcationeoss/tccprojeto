@@ -1,13 +1,13 @@
 // main.js - Gerencia a lógica central, incluindo autenticação e a comunicação com a IA.
 
-// Importa a biblioteca Supabase para gerenciar a autenticação e o banco de dados
-// ✅ CORREÇÃO: Usamos o caminho correto para a versão 'esm' do Supabase.
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/esm/supabase.esm.min.js';
+// ✅ CORREÇÃO: Não importamos mais a biblioteca, pois ela já foi carregada no HTML
+// import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/esm/supabase.esm.min.js';
 
 // Variáveis para a API Supabase e Eden AI
 const supabaseUrl = window.ENV.VITE_SUPABASE_URL;
 const supabaseAnonKey = window.ENV.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// ✅ CORREÇÃO: Pegamos o createClient do objeto global 'supabase'
+const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 // =========================================
 // FUNÇÕES DE AUTENTICAÇÃO

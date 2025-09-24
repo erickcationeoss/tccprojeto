@@ -12,18 +12,17 @@
             VITE_SUPABASE_URL: "https://nxomedltnpwwdutgylma.supabase.co",
             VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b21lZGx0bnB3d2R1dGd5bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMTg1MzYsImV4cCI6MjA3MzU5NDUzNn0.yesaoekFp14ye4U0KfXV-R_FxJ2GGPCEjvIC6W2OEqU",
             // A chave do Gemini será usada diretamente no main.js
+            VITE_EDEN_AI_API_KEY: "" 
         }
     </script>
 
     <!-- ✅ DEPOIS OS CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"> </script>
-    <script> src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/esm/supabase.esm.min.js" </script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+    <!-- ✅ AQUI ESTÁ O CDN CORRETO DO SUPABASE (VERSÃO UMD) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.38.0/dist/umd/supabase.min.js"></script>
+
     <!-- ✅ POR FIM SEUS SCRIPTS CORRIGIDOS -->
-    <!-- Agora apenas um arquivo de módulo centralizado -->
     <script type="module" src="main.js"></script>
-    <!-- O app.js deve vir depois e não precisa ser um módulo,
-    pois ele acessa as funções expostas pelo main.js -->
     <script src="app.js" defer></script>
 </head>
 <body>
