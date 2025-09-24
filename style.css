@@ -8,10 +8,10 @@
 }
 
 :root {
-    --bg-color: #1a1a1a;
+    --bg-color: #ff6b35; /* Laranja vibrante para o fundo */
     --card-color: #2b2b2b;
-    --text-color: #e0e0e0;
-    --accent-color: #007bff; /* Azul vibrante para destaque */
+    --text-color: #ffffff; /* Letras brancas */
+    --accent-color: #ff8c42; /* Laranja mais claro para destaque */
     --input-bg: #3c3c3c;
     --border-color: #555;
     --shadow-color: rgba(0, 0, 0, 0.4);
@@ -28,7 +28,7 @@ html, body {
     overflow: hidden;
 }
 
-/* Containers de Tela */
+/* Containers de Tela - Centralização Aprimorada */
 .screen {
     width: 100%;
     max-width: 450px;
@@ -37,32 +37,35 @@ html, body {
     background-color: var(--card-color);
     box-shadow: 0 10px 30px var(--shadow-color);
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    position: relative;
+    position: absolute; /* Alterado para absolute para centralização perfeita */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 10;
 }
 
 .hidden {
     display: none;
     opacity: 0;
-    transform: scale(0.95);
+    transform: translate(-50%, -50%) scale(0.95); /* Ajustado para manter centralização */
     pointer-events: none;
 }
 
 .visible {
     display: block;
     opacity: 1;
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1); /* Ajustado para manter centralização */
     animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translate(-50%, -50%) scale(0.95);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translate(-50%, -50%) scale(1);
     }
 }
 
@@ -80,7 +83,7 @@ html, body {
 
 .luxury-subtitle {
     font-size: 1rem;
-    color: #999;
+    color: #cccccc; /* Mais claro para melhor contraste */
 }
 
 .accent {
@@ -97,7 +100,7 @@ html, body {
 .auth-btn {
     background: none;
     border: none;
-    color: #999;
+    color: #cccccc; /* Mais claro para melhor contraste */
     font-size: 1rem;
     font-weight: 600;
     padding: 0.5rem 1rem;
@@ -158,7 +161,7 @@ html, body {
     top: 50%;
     left: 1rem;
     transform: translateY(-50%);
-    color: #999;
+    color: #cccccc; /* Mais claro para melhor contraste */
     pointer-events: none;
     transition: all 0.3s ease-in-out;
 }
@@ -188,7 +191,7 @@ html, body {
 }
 
 .luxury-btn:hover {
-    background-color: #0056b3;
+    background-color: #e67e34; /* Laranja mais escuro no hover */
     transform: translateY(-2px);
 }
 
@@ -200,7 +203,7 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #1a1a1a;
+    background-color: var(--bg-color); /* Usando a variável de cor */
 }
 
 .particles-container {
@@ -268,7 +271,7 @@ html, body {
     }
 }
 
-/* Estilos do Chat */
+/* Estilos do Chat - Centralização Aprimorada */
 .chat-container {
     max-width: 800px;
     display: flex;
@@ -277,6 +280,10 @@ html, body {
     padding: 0;
     border-radius: 1rem;
     overflow: hidden;
+    position: absolute; /* Adicionado para centralização */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .chat-header {
@@ -294,7 +301,7 @@ html, body {
 
 .chat-subtitle {
     font-size: 0.9rem;
-    color: #999;
+    color: #cccccc; /* Mais claro para melhor contraste */
 }
 
 .logout-btn {
@@ -322,7 +329,7 @@ html, body {
 .tab {
     background: none;
     border: none;
-    color: #999;
+    color: #cccccc; /* Mais claro para melhor contraste */
     font-size: 1rem;
     font-weight: 600;
     padding: 0.5rem 1rem;
@@ -448,7 +455,7 @@ html, body {
 
 .message-time {
     font-size: 0.7rem;
-    color: #888;
+    color: #cccccc; /* Mais claro para melhor contraste */
     margin: 0 0.5rem;
 }
 
